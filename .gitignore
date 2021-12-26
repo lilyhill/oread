@@ -4,3 +4,5 @@ keys.txt
 .env.prod
 .env
 venv/*
+
+/__pycache__/*
