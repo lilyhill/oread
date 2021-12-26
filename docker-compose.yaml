@@ -1,0 +1,16 @@
+version: '3.7'
+
+services:
+  web:
+    build:
+      context: ./olivier
+      dockerfile: Dockerfile
+    expose:
+      - 80
+    env_file:
+      - .env
+    volumes:
+      - .:/usr/src/app
+      - ./olivier:/home/app/web
+    ports:
+      - '3131:8000'
