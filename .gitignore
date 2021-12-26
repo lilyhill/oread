@@ -1,2 +1,5 @@
 keys.txt
 .idea/*
+
+.env.prod
+.env
