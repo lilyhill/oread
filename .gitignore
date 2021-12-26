@@ -3,3 +3,4 @@ keys.txt
 
 .env.prod
 .env
+venv/*
