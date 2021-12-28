@@ -15,7 +15,7 @@ ENV PYTHONUNBUFFERED 1
 
 # install psycopg2 dependencies
 RUN apk update \
-    && apk add postgresql-dev gcc python3-dev musl-dev
+    && apk add postgresql-dev gcc musl-dev
 
 # lint
 RUN pip install --upgrade pip
@@ -49,12 +49,16 @@ ENV APP_HOME=/home/app/web
 RUN mkdir $APP_HOME
 RUN mkdir $APP_HOME/static
 WORKDIR $APP_HOME
+RUN apk add --update tzdata
+ENV TZ=Asia/Calcutta
 
 
 # install dependencies
 RUN apk update && apk add libpq
 COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.txt .
+RUN apk update \
+    && apk add postgresql-dev gcc musl-dev
 RUN pip install --no-cache /wheels/*
 RUN pwd
 RUN ls -a

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+<h1>Lists of URLs that you sent</h1>
+{% if url_list %}
+{% for key,urls in url_list.items %}
+    <p>{{ key }}</p>
+    <ul>
+    {% for i in urls %}
+        <li> <a href="{{i}}" target="_blank">{{ i }}</a></li>
+    {% endfor %}
+    </ul>
+{% endfor %}
+{% endif %}
+
+{% endblock %}

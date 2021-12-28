@@ -1,0 +1,35 @@
+<html>
+<head>
+    {% load static %}
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta content="en-us" http-equiv="Content-Language">
+
+<link rel="shortcut icon" href="{% static 'img/suriya.jpeg' %}">
+<link rel="manifest" href="{% static 'manifest/manifest.json' %}">
+<link rel="canonical" href="http://suriyaganesh.com/">
+    <script src="https://kit.fontawesome.com/097e856c0f.js" crossorigin="anonymous"></script>
+<title>Suriya Ganesh</title>
+</head>
+
+<body style= 'visibility: hidden;' >
+
+        {% block content %}
+ <!-- Content Goes here -->
+        {% endblock content %}
+
+<script>
+let domReady = (cb) => {
+  document.readyState === 'interactive' || document.readyState === 'complete'
+    ? cb()
+    : document.addEventListener('DOMContentLoaded', cb);
+};
+
+domReady(() => {
+  document.body.style.visibility = 'visible';
+});
+</script>
+
+</body>
+</html>

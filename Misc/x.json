@@ -1,0 +1,37 @@
+{
+   "update_id": 326096591,
+   "message": {
+     "message_id": 1124,
+     "from": {
+       "id": 551256648,
+       "is_bot": true,
+       "first_name": "experimentbot",
+       "username": "SwitchControl_bot"
+     },
+     "chat": {
+       "id": 575182560,
+       "first_name": "Suriya",
+       "username": "SuriyaGanesh",
+       "type": "private"
+     },
+     "date": 1640617506,
+     "pinned_message": {
+       "message_id": 1123,
+       "from": {
+         "id": 575182560,
+         "is_bot": false,
+         "first_name": "Suriya",
+         "username": "SuriyaGanesh",
+         "language_code": "en"
+       },
+       "chat": {
+         "id": 575182560,
+         "first_name": "Suriya",
+         "username": "SuriyaGanesh",
+         "type": "private"
+       },
+       "date": 1640617475,
+       "text": "asdfasdfasdfafdsasdffadfsfadsfadsfasd"
+     }
+   }
+ }
