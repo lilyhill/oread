@@ -19,7 +19,7 @@ def sendWelcome(cid, ):
 
     d = {
         "chat_id": cid,
-        "text": f'Hi! You can view your collated URls at https://{my_url}/l/{cid}'
+        "text": f'Hi! You can view your collated URls at http://{my_url}/l/{cid}'
     }
 
 
