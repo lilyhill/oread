@@ -12,7 +12,7 @@ from datetime import date
 def telegram_callback(request):
     body = json.loads(request.body)
 
-
+    print(body)
     if "pinned_message" not in body["message"]:
         try:
             b = Url.objects.all().filter(chat_id=body["message"]["chat"]["id"])
