@@ -10,6 +10,7 @@ services:
       - 80
     volumes:
       - .:/usr/src/app
+      - ./olivier:/home/app/web
     ports:
       - 3131:8000
     env_file:
