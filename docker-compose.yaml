@@ -13,4 +13,4 @@ services:
       - .:/usr/src/app
       - ./olivier:/home/app/web
     ports:
-      - '3131:8000'
+      - '80:8000'

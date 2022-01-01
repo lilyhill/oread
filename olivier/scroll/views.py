@@ -15,9 +15,18 @@ def telegram_callback(request):
     print(body)
     if "pinned_message" not in body["message"]:
         try:
-            b = Url.objects.all().filter(chat_id=body["message"]["chat"]["id"])
+            b = list(Url.objects.all().filter(chat_id=body["message"]["chat"]["id"]))
+            print(not b)
+            print(b)
             if not b:
                 sendWelcomeAndPin(cid=body["message"]["chat"]["id"])
+                u = Url(
+                    message_id=body["message"]["message_id"],
+                    from_id=body["message"]["from"]["id"],
+                    chat_id=body["message"]["chat"]["id"],
+                    url=None
+                )
+                print(u.save())
 
             if "entities" in body["message"]:
                 for i in body["message"]["entities"]:
@@ -32,9 +41,14 @@ def telegram_callback(request):
                         )
                         u.save()
 
+
+
         except KeyError as e:
 
             print(f'KeyError :{e}')
+
+        except Exception as e:
+            print(f'Some exception occured :{e}')
 
     return JsonResponse({'foo': 'bar'})
 
@@ -58,7 +72,7 @@ def get_list(request, id):
     ctx ={}
     if request.method == 'GET':
         print(f'***{id}')
-        qset = Url.objects.all().filter(chat_id=id)
+        qset = Url.objects.all().filter(chat_id=id, url__isnull=True)
         dates = collate_dates(qset)
         ctx["url_list"] = dates
 
