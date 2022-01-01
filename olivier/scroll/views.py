@@ -60,7 +60,7 @@ def collate_dates(qset):
         created_at = i.created_at
         str = date.isoformat(created_at)
 
-        if str in d:
+        if str in d and i.url != "None":
             d[str].append(i.url)
         else:
             d[str] = [i.url]
@@ -72,8 +72,9 @@ def get_list(request, id):
     ctx ={}
     if request.method == 'GET':
         print(f'***{id}')
-        qset = Url.objects.all().filter(chat_id=id, url__isnull=True)
+        qset = Url.objects.all().filter(chat_id=id, url__isnull=False)
+
         dates = collate_dates(qset)
         ctx["url_list"] = dates
-
+        ic(ctx)
     return render(request,"list.html", ctx)
