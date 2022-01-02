@@ -19,7 +19,7 @@ def sendWelcome(cid, ):
 
     d = {
         "chat_id": cid,
-        "text": f'Hi! You can view your collated URls at http://{my_url}/l/{cid}'
+        "text": f'Hi! I\'m oread, I can manage Urls for you.\n You can find the featurelist hereYou can view your collated URLs at https://{my_url}/l/{cid}'
     }
 
 
@@ -40,3 +40,15 @@ def sendWelcomeAndPin(cid):
         print(f'd, {d}')
         res = requests.post(url=getPinUrl(), data=d)
         print(f'%% {res.json()}')
+
+def ackURL(cid, mid):
+
+    d = {
+        "chat_id": cid,
+        "text": f'noted ✅',
+        "reply_to_message_id": mid
+    }
+
+    res = requests.post(url=getMsgUrl(), data=d)
+
+    return res.json()

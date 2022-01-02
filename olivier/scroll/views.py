@@ -3,15 +3,18 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.csrf import csrf_exempt
 from .models import Url
 import json
-from .message.m import sendWelcomeAndPin
+from .message.m import sendWelcomeAndPin, ackURL
 from icecream import ic
 from datetime import date
+from .utils.db import saveURL
+import datetime
+import os
 
 
 @csrf_exempt
 def telegram_callback(request):
     body = json.loads(request.body)
-
+    count = 0
     print(body)
     if "pinned_message" not in body["message"]:
         try:
@@ -20,28 +23,27 @@ def telegram_callback(request):
             print(b)
             if not b:
                 sendWelcomeAndPin(cid=body["message"]["chat"]["id"])
-                u = Url(
-                    message_id=body["message"]["message_id"],
-                    from_id=body["message"]["from"]["id"],
-                    chat_id=body["message"]["chat"]["id"],
+                # Saving placeholder to bypass the invalid message 2nd time issue
+                saveURL(
+                    mid=body["message"]["message_id"],
+                    fid=body["message"]["from"]["id"],
+                    cid=body["message"]["chat"]["id"],
                     url=None
                 )
-                print(u.save())
 
             if "entities" in body["message"]:
                 for i in body["message"]["entities"]:
                     if i["type"] == "url":
                         txt = body["message"]["text"]
                         url = txt[i["offset"]:i["offset"] + i["length"]]
-                        u = Url(
-                            message_id=body["message"]["message_id"],
-                            from_id=body["message"]["from"]["id"],
-                            chat_id=body["message"]["chat"]["id"],
-                            url=url,
+                        count += saveURL(
+                            mid=body["message"]["message_id"],
+                            fid=body["message"]["from"]["id"],
+                            cid=body["message"]["chat"]["id"],
+                            url=url
                         )
-                        u.save()
-
-
+                if count:
+                    ackURL(mid=body["message"]["message_id"], cid=body["message"]["chat"]["id"])
 
         except KeyError as e:
 
@@ -52,20 +54,27 @@ def telegram_callback(request):
 
     return JsonResponse({'foo': 'bar'})
 
+
 def collate_dates(qset):
 
     d = {}
 
     for i in qset:
         created_at = i.created_at
-        str = date.isoformat(created_at)
+        ic(created_at)
+        current_datetime = datetime.datetime.now()
+        ic(str(created_at))
+        ic(str(current_datetime))
+        ic(os.environ['TZ'])
+        stri = date.isoformat(created_at)
 
-        if str in d and i.url != "None":
-            d[str].append(i.url)
+        if stri in d and i.url != "None":
+            d[stri].append(i.url)
         else:
-            d[str] = [i.url]
+            d[stri] = [i.url]
 
     return d
+
 
 @csrf_exempt
 def get_list(request, id):

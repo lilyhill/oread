@@ -17,7 +17,6 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
-print(f'Template^^^^ : {TEMPLATE_DIR}')
 
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
@@ -105,7 +104,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Europe/Paris'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
