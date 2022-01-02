@@ -16,6 +16,9 @@ def telegram_callback(request):
     body = json.loads(request.body)
     count = 0
     ic(body)
+    d = datetime.datetime.fromtimestamp(body["message"]["date"])
+    ic(date.isoformat(d))
+    ic(str(d))
     if "pinned_message" not in body["message"]:
         try:
             b = list(Url.objects.all().filter(chat_id=body["message"]["chat"]["id"]))
@@ -28,7 +31,8 @@ def telegram_callback(request):
                     mid=body["message"]["message_id"],
                     fid=body["message"]["from"]["id"],
                     cid=body["message"]["chat"]["id"],
-                    url=None
+                    url=None,
+                    cat=datetime.datetime.fromtimestamp(body["message"]["date"])
                 )
 
             if "entities" in body["message"] and "reply_to_message" not in body["message"]:
@@ -40,10 +44,12 @@ def telegram_callback(request):
                             mid=body["message"]["message_id"],
                             fid=body["message"]["from"]["id"],
                             cid=body["message"]["chat"]["id"],
-                            url=url
+                            url=url,
+                            cat=datetime.datetime.fromtimestamp(body["message"]["date"])
                         )
                 if count:
                     ackURL(mid=body["message"]["message_id"], cid=body["message"]["chat"]["id"])
+
             elif "reply_to_message" in body["message"]:
                 ic("reply_to_message")
                 qset = list(getURL(
