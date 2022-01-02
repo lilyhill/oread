@@ -13,7 +13,7 @@ class Url(models.Model):
     message_id = models.IntegerField(default=0)
     from_id = models.IntegerField(default=0)
     chat_id = models.IntegerField(default=0)
-    url = models.URLField(max_length=1000, default="", null=True)
+    url = models.TextField(max_length=10000, default="", null=True)
     created_at = models.DateTimeField(null=True)
 
     def save(self, *args, **kwargs):

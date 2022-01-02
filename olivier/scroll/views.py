@@ -6,7 +6,7 @@ import json
 from .message.m import sendWelcomeAndPin, ackURL
 from icecream import ic
 from datetime import date
-from .utils.db import saveURL
+from .utils.db import saveURL, getURL
 import datetime
 import os
 
@@ -15,7 +15,7 @@ import os
 def telegram_callback(request):
     body = json.loads(request.body)
     count = 0
-    print(body)
+    ic(body)
     if "pinned_message" not in body["message"]:
         try:
             b = list(Url.objects.all().filter(chat_id=body["message"]["chat"]["id"]))
@@ -31,7 +31,7 @@ def telegram_callback(request):
                     url=None
                 )
 
-            if "entities" in body["message"]:
+            if "entities" in body["message"] and "reply_to_message" not in body["message"]:
                 for i in body["message"]["entities"]:
                     if i["type"] == "url":
                         txt = body["message"]["text"]
@@ -44,6 +44,28 @@ def telegram_callback(request):
                         )
                 if count:
                     ackURL(mid=body["message"]["message_id"], cid=body["message"]["chat"]["id"])
+            elif "reply_to_message" in body["message"]:
+                ic("reply_to_message")
+                qset = list(getURL(
+                    mid=body["message"]["reply_to_message"]["message_id"],
+                    fid=body["message"]["reply_to_message"]["from"]["id"],
+                    cid=body["message"]["reply_to_message"]["chat"]["id"],
+                ))
+                ic(
+                    body["message"]["reply_to_message"]["message_id"],
+                    body["message"]["reply_to_message"]["from"]["id"],
+                    body["message"]["reply_to_message"]["chat"]["id"],
+                )
+                ic(qset)
+
+                if qset:
+                    qset = qset[0]
+                    ic(qset.url)
+
+
+
+
+
 
         except KeyError as e:
 
