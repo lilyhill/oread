@@ -20,6 +20,6 @@ class Url(models.Model):
 
 class Reply(models.Model):
 
-    reply_to = models.ForeignKey(Url, on_delete=models.SET_NULL, null=True)
+    reply_to = models.ForeignKey(Url, on_delete=models.CASCADE, null=True)
     text = models.TextField(max_length=10000, default="", null=True)
 
