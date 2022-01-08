@@ -11,7 +11,8 @@ url = f'https://api.telegram.org/bot{x}/setWebhook'
 print(url)
 
 d = {
-    "url": f'https://{u}/telegramCallback/'
+    "url": f'https://{u}/telegramCallback/',
+    "allowed_updates": ["message", "edited_message"]
 }
 print(d)
 

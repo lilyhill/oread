@@ -1,77 +1,36 @@
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.csrf import csrf_exempt
-from .models import Url
 import json
-from .message.m import sendWelcomeAndPin, ackURL
+from .message.m import ackURL
 from icecream import ic
 from datetime import date
-from .utils.db import saveURL, getURL
+from .utils.db import *
 import datetime
 import os
+from .utils.helpers import *
+import sqlite3
+from datetime import datetime
+import pytz
+import time
+
+
 
 
 @csrf_exempt
 def telegram_callback(request):
     body = json.loads(request.body)
-    count = 0
     ic(body)
-    d = datetime.datetime.fromtimestamp(body["message"]["date"])
-    ic(date.isoformat(d))
-    ic(str(d))
-    if "pinned_message" not in body["message"]:
+    avoid = ["reply_to_message", "pinned_message"]
+    if "message" in body and all(key in body["message"] for key in avoid):
+        message = body["message"]
+
+        ic(any(key in body["message"] for key in ["reply_to_message", "pinned_message"]))
+
         try:
-            b = list(Url.objects.all().filter(chat_id=body["message"]["chat"]["id"]))
-            print(not b)
-            print(b)
-            if not b:
-                sendWelcomeAndPin(cid=body["message"]["chat"]["id"])
-                # Saving placeholder to bypass the invalid message 2nd time issue
-                saveURL(
-                    mid=body["message"]["message_id"],
-                    fid=body["message"]["from"]["id"],
-                    cid=body["message"]["chat"]["id"],
-                    url=None,
-                    cat=datetime.datetime.fromtimestamp(body["message"]["date"])
-                )
-
-            if "entities" in body["message"] and "reply_to_message" not in body["message"]:
-                for i in body["message"]["entities"]:
-                    if i["type"] == "url":
-                        txt = body["message"]["text"]
-                        url = txt[i["offset"]:i["offset"] + i["length"]]
-                        count += saveURL(
-                            mid=body["message"]["message_id"],
-                            fid=body["message"]["from"]["id"],
-                            cid=body["message"]["chat"]["id"],
-                            url=url,
-                            cat=datetime.datetime.fromtimestamp(body["message"]["date"])
-                        )
-                if count:
-                    ackURL(mid=body["message"]["message_id"], cid=body["message"]["chat"]["id"])
-
-            elif "reply_to_message" in body["message"]:
-                ic("reply_to_message")
-                qset = list(getURL(
-                    mid=body["message"]["reply_to_message"]["message_id"],
-                    fid=body["message"]["reply_to_message"]["from"]["id"],
-                    cid=body["message"]["reply_to_message"]["chat"]["id"],
-                ))
-                ic(
-                    body["message"]["reply_to_message"]["message_id"],
-                    body["message"]["reply_to_message"]["from"]["id"],
-                    body["message"]["reply_to_message"]["chat"]["id"],
-                )
-                ic(qset)
-
-                if qset:
-                    qset = qset[0]
-                    ic(qset.url)
-
-
-
-
-
+            ic("****")
+            if "reply_to_message" not in message and "pinned_message" not in message:
+                handle_message(message)
 
         except KeyError as e:
 
@@ -79,6 +38,14 @@ def telegram_callback(request):
 
         except Exception as e:
             print(f'Some exception occured :{e}')
+
+    elif "edited_message" in body:
+
+        print(0)
+
+    elif "reply_to_message" in body["message"]:
+
+        handle_reply(body["message"])
 
     return JsonResponse({'foo': 'bar'})
 
@@ -89,29 +56,77 @@ def collate_dates(qset):
 
     for i in qset:
         created_at = i.created_at
-        ic(created_at)
-        current_datetime = datetime.datetime.now()
-        ic(str(created_at))
-        ic(str(current_datetime))
-        ic(os.environ['TZ'])
         stri = date.isoformat(created_at)
-
-        if stri in d and i.url != "None":
-            d[stri].append(i.url)
+        o = {
+            "text":i.text,
+            "sub_text":i.sub_text
+        }
+        if stri in d:
+            d[stri].append(o)
         else:
-            d[stri] = [i.url]
-
+            d[stri] = [o]
     return d
 
 
 @csrf_exempt
-def get_list(request, id):
+def get_list(request, username):
     ctx ={}
     if request.method == 'GET':
-        print(f'***{id}')
-        qset = Url.objects.all().filter(chat_id=id, url__isnull=False)
 
-        dates = collate_dates(qset)
-        ctx["url_list"] = dates
-        ic(ctx)
+        try:
+
+            td = list(TelegramData.objects.filter(
+                primary_msg__user__user__username=username
+            ))
+
+            ctx["url_list"] = collate_dates(td)
+            ic(ctx)
+
+        except Exception as e:
+            ic('get_list :', e)
+
     return render(request,"list.html", ctx)
+
+
+def create_message(mid, fid, cid, created, data):
+    local = pytz.timezone("Asia/Kolkata")
+    naive = datetime.strptime(created, "%Y-%m-%d %H:%M:%S")
+    local_dt = local.localize(naive, is_dst=None)
+    utc_dt = local_dt.astimezone(pytz.utc)
+    ic(utc_dt)
+    x = int(time.mktime(utc_dt.timetuple()))
+    ic(x)
+    ic(datetime.fromtimestamp(x))
+    ic(mid,fid,cid, created, data)
+    return {"message": {"chat": {"first_name": "Suriya",
+                                 "id": cid,
+                                 "type": "private",
+                                 "username": "SuriyaGanesh"},
+              "date": x,
+              "from": {"first_name": "Suriya",
+                       "id": fid,
+                       "is_bot": False,
+                       "language_code": "en",
+                       "username": "SuriyaGanesh"},
+              "message_id": mid,
+              "text": data},
+  "update_id": 326096742 }
+
+
+def m(request):
+
+    server = sqlite3.connect('scroll/db.sqlite3')
+    local = sqlite3.connect('db.sqlite3')
+    cur = server.execute("PRAGMA database_list;")
+    print(cur.fetchone())
+    cur = server.execute("SELECT * FROM scroll_url")
+
+    for i in cur.fetchall():
+
+        ic(i)
+        msg = create_message(i[1], i[2], i[3], i[4], i[5])
+        ic(msg)
+
+        handle_message(msg["message"])
+
+    return JsonResponse({})

@@ -6,4 +6,7 @@ keys.txt
 venv/*
 
 **/__pycache__/*
-db.sqlite3
+olivier/scroll/db.sqlite3
+olivier/db.sqlite3
+
+rough/*

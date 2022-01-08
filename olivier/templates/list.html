@@ -3,13 +3,16 @@
 {% load static %}
 <h1>Lists of URLs that you sent</h1>
 {% if url_list %}
-{% for key,urls in url_list.items %}
+{% for key,value in url_list.items %}
     <p>{{ key }}</p>
     <ul>
-    {% for i in urls %}
-        {% if i != "None" %}
-            <li> <a href="{{i}}" target="_blank">{{ i }}</a></li>
-        {% endif %}
+    {% for i in value %}
+        <li> {{ i.text }} </li>
+        <ul>
+            {% if i.sub_text %}
+                <li>{{ i.sub_text | safe }}</li>
+            {% endif %}
+        </ul>
     {% endfor %}
     </ul>
 {% endfor %}
