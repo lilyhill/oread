@@ -9,4 +9,4 @@ venv/*
 olivier/scroll/db.sqlite3
 olivier/db.sqlite3
 
-rough/*
+olivier/rough/*
