@@ -1,10 +1,5 @@
 import json
 
-from ..models import *
-from icecream import  ic
-import random
-import string
-import datetime
 from ..message.m import *
 from .db import *
 
@@ -27,6 +22,7 @@ def handle_reply(message):
         t.save()
 
         ic(t.sub_text)
+        ackURL(mid=message["message_id"], cid=message["chat"]["id"])
 
     except Exception as e:
         print("error occurred",e)
@@ -88,6 +84,6 @@ def create_telegram_user(message):
 
     t.save()
 
-    # sendWelcomeAndPin(cid=message["chat"]["id"])
+    sendWelcomeAndPin(cid=message["chat"]["id"])
 
     return t
