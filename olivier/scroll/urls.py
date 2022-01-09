@@ -4,5 +4,4 @@ from .views import *
 urlpatterns = [
     path('telegramCallback/', telegram_callback),
     path('l/<int:username>/', get_list),
-    path('m/', m),
 ]

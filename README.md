@@ -5,6 +5,7 @@ A simple telegram bot for collating my URLs for me to help in write my [readlog]
 ## TODO:
 - [ ] updates for editing messages.
 - [x] simple sub pointers by quoting the message.
+- [x] 
 - [ ] Sort in reverse order in the UI. remember it as well. (React?)
 - [ ] API for integrating with other services. eg. at the end of everyday I want oread to trigger a github action that would get the readlist from yesterday and deploy it on my website.
 - [x] simple web interface to show all links

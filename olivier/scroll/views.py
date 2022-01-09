@@ -22,10 +22,10 @@ def telegram_callback(request):
     body = json.loads(request.body)
     ic(body)
     avoid = ["reply_to_message", "pinned_message"]
-    if "message" in body and all(key in body["message"] for key in avoid):
+    ic(any(key not in body["message"] for key in ["reply_to_message", "pinned_message"]))
+    if "message" in body and all(key not in body["message"] for key in avoid):
         message = body["message"]
 
-        ic(any(key in body["message"] for key in ["reply_to_message", "pinned_message"]))
 
         try:
             ic("****")
