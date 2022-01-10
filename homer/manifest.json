@@ -2,8 +2,20 @@
   "name": "Homer",
   "description": "The homing extension to annotate and save URLs",
   "version": "1.0",
+  "permissions": [
+    "activeTab",
+    "contextMenus"
+  ],
+  "content_scripts":[
+    {
+      "matches":[
+        "<all_urls>"
+      ],
+      "js": ["trigger.js"]
+    }
+  ],
   "manifest_version": 3,
     "background": {
-    "service_worker": "background.js"
-  }
+      "service_worker": "background.js"
+    }
 }
