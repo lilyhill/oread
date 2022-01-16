@@ -34,6 +34,7 @@ class TelegramData(models.Model):
 
 class ExtensionUser(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    uid = models.CharField(max_length=10, null=True)
 
 
 class ExtensionData(models.Model):

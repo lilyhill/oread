@@ -86,3 +86,11 @@ def get_list(request, username):
             ic('get_list :', e)
 
     return render(request,"list.html", ctx)
+
+
+def get_username(request):
+
+    print("^^^^^^^^^^^^^^^^")
+    response = JsonResponse({"Success": True})
+
+    return response

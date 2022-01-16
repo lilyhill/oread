@@ -1,11 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="">
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="popup.css">
+
     <title>Chrome Addon v3: popup</title>
 </head>
+
 <body>
-    This is the <span class="special-text">HTML</span> body of the addon.
+<form name="myform" id="uname-form">
+    <label for="uname">username:</label><br>
+    <input type="text" id="uname" name="uname"><br>
+    <input name="Submit"  type="submit" value="Submit" />
+</form>
+
+<script src="popup.js"> </script>
 </body>
 </html>
