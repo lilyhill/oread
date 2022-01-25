@@ -10,7 +10,7 @@
         <li> {{ i.text }} </li>
         <ul>
             {% if i.sub_text %}
-                <li>{{ i.sub_text | safe }}</li>
+                {{ i.sub_text | safe }}
             {% endif %}
         </ul>
     {% endfor %}
