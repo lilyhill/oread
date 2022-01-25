@@ -1,5 +1,4 @@
 {
-    // Comments are accepted in the manifest, even though it is JSON.
     "manifest_version": 3,
     "name": "homer",
     "description": "A simple highlighter with data storing",
@@ -15,7 +14,6 @@
         "default_popup": "popup/popup.html"
     },
     "permissions": [
-        "tabs",
         "contextMenus",
         "storage"
     ],

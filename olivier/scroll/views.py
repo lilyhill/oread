@@ -20,7 +20,7 @@ def telegram_callback(request):
     body = json.loads(request.body)
     ic(body)
     avoid = ["reply_to_message", "pinned_message"]
-    ic(any(key not in body["message"] for key in ["reply_to_message", "pinned_message"]))
+    # ic(any(key not in body["message"] for key in ["reply_to_message", "pinned_message"]))
     if "message" in body and all(key not in body["message"] for key in avoid):
         message = body["message"]
 
@@ -41,9 +41,11 @@ def telegram_callback(request):
 
         print(0)
 
-    elif "reply_to_message" in body["message"]:
+    elif "message" in body and "reply_to_message" in body["message"]:
 
         handle_reply(body["message"])
+    else:
+        ic(body)
 
     return JsonResponse({'foo': 'bar'})
 

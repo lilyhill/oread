@@ -19,9 +19,6 @@ function onInstalledCallback (details){
             console.log('base_url is set to ' + base_url);
         });
 
-
-
-
 }
 
 chrome.contextMenus.create(newContextItem);
