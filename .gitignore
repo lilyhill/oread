@@ -11,4 +11,4 @@ olivier/db.sqlite3
 
 olivier/rough/*
 
-.DS_Store
+*.DS_Store
