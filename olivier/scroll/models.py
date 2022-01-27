@@ -34,11 +34,12 @@ class TelegramData(models.Model):
 
 class ExtensionUser(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    uname = models.CharField(max_length=10, null=True)
 
 
 class ExtensionData(models.Model):
     user = models.ForeignKey(ExtensionUser, on_delete=models.CASCADE, null=True)
-    url = models.URLField(max_length=1000, null=True, default="")
+    text = models.URLField(max_length=1000, null=True, default="")
     sub_text = models.TextField(max_length=1000, null=True, default="")
     created_at = models.DateTimeField(null=True)
 

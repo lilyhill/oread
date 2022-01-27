@@ -10,3 +10,5 @@ olivier/scroll/db.sqlite3
 olivier/db.sqlite3
 
 olivier/rough/*
+
+.DS_Store

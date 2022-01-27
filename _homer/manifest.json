@@ -1,0 +1,29 @@
+{
+  "name": "Homer",
+  "description": "The homing extension to annotate and save URLs",
+  "version": "1.0",
+  "manifest_version": 3,
+  "background": {
+    "service_worker": "./sw.js"
+  },
+  "permissions": [
+    "storage"
+  ],
+  "action": {
+    "action": {
+      "default_title": "Click Me",
+      "default_popup": "popup.html"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*/*",
+        "http://*/*"
+      ],
+      "js": [
+        "scripts/main.js"
+      ]
+    }
+  ]
+}

@@ -29,7 +29,8 @@ def sendWelcome(cid, ):
 
     d = {
         "chat_id": cid,
-        "text": f'The collated URLs at https://{my_url}/l/{cid}'
+        "text": f'The collated URLs at https://{my_url}/l/{cid}',
+        "url": f'https://{my_url}/l/{cid}'
     }
 
     res = requests.post(url=getMsgUrl(), data=d)

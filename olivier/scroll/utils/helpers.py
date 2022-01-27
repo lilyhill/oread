@@ -71,19 +71,20 @@ def create_telegram_user(message):
     try:
         u = User(
             name="",
-            username = str(message["chat"]["id"]),
+            username=str(message["chat"]["id"]),
         )
         u.save()
+        t = TelegramUser(
+            user=u,
+            cid=message["chat"]["id"],
+            fid=message["from"]["id"]
+        )
+
+        t.save()
+
+        sendWelcomeAndPin(cid=message["chat"]["id"])
+
     except Exception as e:
         ic("create_telegram_user ", e)
-    t = TelegramUser(
-        user = u,
-        cid = message["chat"]["id"],
-        fid=message["from"]["id"]
-    )
-
-    t.save()
-
-    sendWelcomeAndPin(cid=message["chat"]["id"])
 
     return t
