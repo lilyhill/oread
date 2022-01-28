@@ -48,7 +48,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-mimetypes.add_type("text/css", ".css", True)
+base = os.environ.get("URI")
+
+CSRF_TRUSTED_ORIGINS = [base]
 
 ROOT_URLCONF = 'olivier.urls'
 
@@ -120,10 +122,8 @@ USE_TZ = False
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'assets/')
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static/"), # Django will search for /src/
+    os.path.join(BASE_DIR, "static/"),
 ]
-
-print(STATIC_ROOT)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
