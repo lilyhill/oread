@@ -21,7 +21,9 @@ function onInstalledCallback (details){
 
 }
 
-chrome.contextMenus.create(newContextItem);
+chrome.contextMenus.removeAll(function() {
+    chrome.contextMenus.create(newContextItem);
+});
 
 chrome.contextMenus.onClicked.addListener(function(info,tab){
   var currentTime = new Date();
@@ -39,6 +41,7 @@ chrome.contextMenus.onClicked.addListener(function(info,tab){
     selection: info.selectionText
   }
     console.log({data})
+
 
 fetch(`${base_url}/extensionCallback/`,{
     method: 'POST', // *GET, POST, PUT, DELETE, etc.
