@@ -36,12 +36,18 @@ class ExtensionUser(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     uname = models.CharField(max_length=10, null=True)
 
+    def __str__(self):
+        return self.uname
+
 
 class ExtensionData(models.Model):
     user = models.ForeignKey(ExtensionUser, on_delete=models.CASCADE, null=True)
     text = models.URLField(max_length=1000, null=True, default="")
     sub_text = models.TextField(max_length=1000, null=True, default="")
     created_at = models.DateTimeField(null=True)
+
+    def __str__(self):
+        return self.user.uname
 
 
 # class Url(models.Model):
