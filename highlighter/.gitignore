@@ -1,0 +1,8 @@
+*.crx
+.idea/
+
+config/secrets.js
+config/secrets.production.js
+
+node_modules/
+releases/

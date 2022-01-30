@@ -10,7 +10,7 @@ var txt = ''
 //   console.log("$$$$$$$",txt)
 //     console.log(url)
 // }
-
+console.log("!!!")
 chrome.runtime.onMessage.addListener(
       function(request, sender, sendResponse) {
         if( request.message === "start" ) {

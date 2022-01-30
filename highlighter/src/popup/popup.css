@@ -1,0 +1,222 @@
+* {
+    font-family: 'Catamaran', sans-serif;
+    color: #414141;
+}
+
+html {
+    width: 450px;
+    height: 600px;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+
+    background-color: #f0f0f0;
+}
+
+#title-section {
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 0;
+    align-items: center;
+    margin: 22px 22px 0 22px;
+}
+
+#title-section h1 {
+    color: black;
+    font-size: 40px;
+    font-weight: bold;
+    margin: 0 0 -6px -4px;
+
+    cursor: default;
+}
+
+#title-section .highlighter-icon {
+    height: 72px;
+}
+
+#close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+
+    color: #AAAAAA;
+    font-size: 21px;
+    cursor: pointer;
+}
+
+#settings-section { 
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 0;
+    justify-content: center;
+    align-items: center;
+    height: 140px;
+}
+
+#colors-section {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 23px 0 23px;
+}
+
+#colors-list {
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 0;
+    justify-content: center;
+}
+
+.color {
+    box-sizing: border-box;
+    height: 24px;
+    width: 24px;
+    margin: 4px;
+
+    cursor: pointer;
+    border: 2px solid #5a5a5a;
+    border-radius: 4px;
+}
+
+#selected-color {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin: 10px;
+}
+
+#change-color-button {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 28px;
+    width: 28px;
+    bottom: -12px;
+    right: -15px;
+
+    cursor: pointer;
+    border-radius: 50%;
+    background-color: rgba(196, 196, 196, 0.23);
+}
+
+#selected-color:hover #change-color-button, #change-color-button:hover {
+    background-color: rgba(196, 196, 196, 0.53);
+}
+
+#controls-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 8px;
+}
+
+#toggle-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    width: 190px;
+    height: 40px;
+    margin: 10px 0;
+    padding-top: 4px;
+
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: bold;
+    background-color: #fdd33c;
+    border: 0;
+    border-radius: 7px;
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+#toggle-button > span {
+    margin-bottom: -4px;
+}
+
+#shortcut-section {
+    font-size: 14px;
+}
+
+#shortcut-link {
+    display: inline-flex;
+    align-items: center;
+
+    cursor: pointer;
+}
+
+#shortcut-link-text {
+    text-decoration: underline;
+}
+
+#shortcut-link .material-icons {
+    margin-left: 4px;
+    font-size: 16px;
+}
+
+#highlights-section {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    min-height: 0;
+    margin: 0 8px;
+}
+
+#tools {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin: 8px 20px;
+}
+
+#tools .material-icons {
+    margin-left: 3px;
+    margin-bottom: 1px;
+    font-size: 22px;
+}
+
+.tool {
+    display: flex;
+    align-items: center;
+    margin: 0 8px 0 8px;
+    
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#highlights-list {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.highlight {
+    margin: 0 18px 15px 18px;
+    padding: 10px 14px;
+
+    cursor: pointer;
+    font-size: 14px;
+    background-color: white;
+    border-radius: 5px;
+}
+
+#highlights-list-empty-state {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    margin-top: -20px;
+
+    font-size: 20px;
+    font-style: italic;
+    color: #aaaaaa;
+}
