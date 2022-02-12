@@ -12,13 +12,14 @@ globals:
   update: readonly # From utils/storageManager
   addHighlightError: readonly # From utils/errorManager
   highlight: readonly # From utils/highlight
+  highlightV3: readonly # From utils/highlightV3
+  highlightV4: readonly # From utils/highlightV4
   highlight_legacy: readonly # From utils/highlight_legacy
   HIGHLIGHT_CLASS: readonly # From utils/highlight
   DELETED_CLASS: readonly # From utils/highlight
   onHighlightMouseEnterOrClick: readonly # From hoverTools/hoverTools
   onHighlightMouseLeave: readonly # From hoverTools/hoverTools
   highlightOnSelection: readonly # From contentScripts/highlighterCursor
-  _gaq: readonly # From config/analytics
 ignorePatterns:
   - lib/*
   - config/*
@@ -93,9 +94,7 @@ rules:
   jsx-quotes: error
   key-spacing: 'off'
   keyword-spacing: 'off'
-  linebreak-style:
-    - error
-    - windows
+  linebreak-style: 'off'
   lines-around-comment: error
   lines-between-class-members: error
   max-classes-per-file: error

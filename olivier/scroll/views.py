@@ -12,9 +12,6 @@ import time
 
 my_url = os.environ.get("BASE_URL")
 
-
-
-
 @csrf_exempt
 def telegram_callback(request):
     body = json.loads(request.body)

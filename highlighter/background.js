@@ -1,7 +1,8 @@
 /* eslint-disable no-unused-vars */
 
 // NOTE: This file must be in the top-level directory of the extension according to the docs
-import {executeInCurrentTab} from './src/background/utils.js';
+
+import { executeInCurrentTab } from './src/background/utils.js';
 
 const DEFAULT_COLOR_TITLE = "yellow";
 
@@ -10,23 +11,21 @@ chrome.runtime.onInstalled.addListener(async () => {
     // remove existing menu items
     chrome.contextMenus.removeAll();
 
-    chrome.contextMenus.create({title: 'Highlight', id: 'highlight', contexts: ['selection']});
-    chrome.contextMenus.create({title: 'Toggle Cursor', id: 'toggle-cursor'});
-    chrome.contextMenus.create({title: 'Highlighter color', id: 'highlight-colors'});
-    chrome.contextMenus.create({title: 'Yellow', id: 'yellow', parentId: 'highlight-colors', type: 'radio'});
-    chrome.contextMenus.create({title: 'Blue', id: 'blue', parentId: 'highlight-colors', type: 'radio'});
-    chrome.contextMenus.create({title: 'Green', id: 'green', parentId: 'highlight-colors', type: 'radio'});
-    chrome.contextMenus.create({title: 'Pink', id: 'pink', parentId: 'highlight-colors', type: 'radio'});
-    chrome.contextMenus.create({title: "Dark", id: "dark", parentId: "highlight-colors", type: "radio"});
+    chrome.contextMenus.create({ title: 'Highlight', id: 'highlight', contexts: ['selection'] });
+    chrome.contextMenus.create({ title: 'Toggle Cursor', id: 'toggle-cursor' });
+    chrome.contextMenus.create({ title: 'Highlighter color', id: 'highlight-colors' });
+    chrome.contextMenus.create({ title: 'Yellow', id: 'yellow', parentId: 'highlight-colors', type: 'radio' });
+    chrome.contextMenus.create({ title: 'Blue', id: 'blue', parentId: 'highlight-colors', type: 'radio' });
+    chrome.contextMenus.create({ title: 'Green', id: 'green', parentId: 'highlight-colors', type: 'radio' });
+    chrome.contextMenus.create({ title: 'Pink', id: 'pink', parentId: 'highlight-colors', type: 'radio' });
+    chrome.contextMenus.create({ title: "Dark", id: "dark", parentId: "highlight-colors", type: "radio" });
 
     // Get the initial selected color value
-    const {title: colorTitle} = await getCurrentColor();
-    chrome.contextMenus.update(colorTitle, {checked: true});
+    const { title: colorTitle } = await getCurrentColor();
+    chrome.contextMenus.update(colorTitle, { checked: true });
 });
 
-chrome.contextMenus.onClicked.addListener((selectionText, pageUrl, menuItemId, parentMenuItemId) => {
-
-
+chrome.contextMenus.onClicked.addListener(({ menuItemId, parentMenuItemId }) => {
     if (parentMenuItemId === 'highlight-color') {
         changeColorFromContext(menuItemId);
         return;
@@ -34,9 +33,6 @@ chrome.contextMenus.onClicked.addListener((selectionText, pageUrl, menuItemId, p
 
     switch (menuItemId) {
         case 'highlight':
-            if (selectionText && pageUrl) {
-                
-            }
             highlightTextFromContext();
             break;
         case 'toggle-cursor':
@@ -49,6 +45,7 @@ chrome.contextMenus.onClicked.addListener((selectionText, pageUrl, menuItemId, p
 chrome.runtime.onInstalled.addListener(() => {
 });
 chrome.runtime.onStartup.addListener(() => {
+
 });
 
 // Add Keyboard shortcuts
@@ -92,6 +89,9 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
         case 'remove-highlights':
             removeHighlights();
             return;
+        case 'remove-highlight':
+            removeHighlight(request.highlightId);
+            return;
         case 'change-color':
             changeColor(request.color);
             return;
@@ -104,6 +104,9 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
         case 'get-highlights':
             getHighlights().then(sendResponse);
             return true; // return asynchronously
+        case 'get-lost-highlights':
+            getLostHighlights().then(sendResponse);
+            return true; // return asynchronously
         case 'show-highlight':
             return showHighlight(request.highlightId);
         case 'get-current-color':
@@ -114,11 +117,10 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
             return true; // return asynchronously
     }
 });
-
 /* eslint-enable consistent-return */
 
 async function getCurrentColor() {
-    const {color} = await chrome.storage.sync.get("color");
+    const { color } = await chrome.storage.sync.get("color");
     const colorTitle = color || DEFAULT_COLOR_TITLE;
     const colorOptions = await getColorOptions();
     return colorOptions.find((colorOption) => colorOption.title === colorTitle);
@@ -132,24 +134,32 @@ function toggleHighlighterCursorFromContext() {
     toggleHighlighterCursor();
 }
 
-function saveHighlightFromContext(url, text) {
-    saveHighlight(url, text);
-}
-
 function changeColorFromContext(menuItemId) {
     changeColor(menuItemId);
 }
 
 function highlightText() {
-    executeInCurrentTab({file: 'src/contentScripts/highlight.js'});
+    executeInCurrentTab({ file: 'src/contentScripts/highlight.js' });
 }
 
 function toggleHighlighterCursor() {
-    executeInCurrentTab({file: 'src/contentScripts/toggleHighlighterCursor.js'});
+    executeInCurrentTab({ file: 'src/contentScripts/toggleHighlighterCursor.js' });
 }
 
 function removeHighlights() {
-    executeInCurrentTab({file: 'src/contentScripts/removeHighlights.js'});
+    executeInCurrentTab({ file: 'src/contentScripts/removeHighlights.js' });
+}
+
+function removeHighlight(highlightId) {
+
+    function contentScriptRemoveHighlight(highlightIndex) {
+        const highlightError = window.highlighter_lostHighlights.get(highlightIndex);
+        clearTimeout(highlightError?.timeout);
+        window.highlighter_lostHighlights.delete(highlightIndex);
+        removeHighlight(highlightIndex, window.location.hostname + window.location.pathname, window.location.pathname);
+    }
+
+    executeInCurrentTab({ func: contentScriptRemoveHighlight, args: [highlightId] });
 }
 
 function showHighlight(highlightId) {
@@ -167,52 +177,30 @@ function showHighlight(highlightId) {
         }
     }
 
-    executeInCurrentTab({func: contentScriptShowHighlight, args: [highlightId]});
+    executeInCurrentTab({ func: contentScriptShowHighlight, args: [highlightId] });
 }
 
 function getHighlights() {
-    return executeInCurrentTab({file: 'src/contentScripts/getHighlights.js'});
+    return executeInCurrentTab({ file: 'src/contentScripts/getHighlights.js' });
 }
 
-function saveHighlight(url, text) {
+function getLostHighlights() {
+    function contentScriptGetLostHighlights() {
+        const lostHighlights = [];
+        window.highlighter_lostHighlights.forEach((highlight, index) => lostHighlights.push({ string: highlight?.string, index }));
+        return lostHighlights;
+    }
 
-    chrome.storage.sync.get(['username'], (result) => {
-        var uname = result.username;
-        const data = {
-            username: uname,
-            url: url,
-            selection: text,
-        };
-
-        fetch(`${base_url}/extensionCallback/`, {
-            method: 'POST', // *GET, POST, PUT, DELETE, etc.
-            mode: 'cors', // no-cors, *cors, same-origin
-            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: 'same-origin', // include, *same-origin, omit
-            headers: {
-                'Content-Type': 'application/json'
-                // 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            redirect: 'follow', // manual, *follow, error
-            referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-            body: JSON.stringify(data) // body data type must match "Content-Type" header
-        }).then((response) => response.json()).then((d) => {
-
-        }).catch((reason) => {
-            // eslint-disable-next-line no-alert
-            alert(reason);
-        });
-    });
-
+    return executeInCurrentTab({ func: contentScriptGetLostHighlights });
 }
 
 function changeColor(colorTitle) {
     if (!colorTitle) return;
 
-    chrome.storage.sync.set({color: colorTitle});
+    chrome.storage.sync.set({ color: colorTitle });
 
     // Also update the context menu
-    chrome.contextMenus.update(colorTitle, {checked: true});
+    chrome.contextMenus.update(colorTitle, { checked: true });
 }
 
 async function editColor(colorTitle, color, textColor) {
@@ -226,7 +214,7 @@ async function editColor(colorTitle, color, textColor) {
         delete colorOption.textColor;
     }
 
-    chrome.storage.sync.set({colors: colorOptions});
+    chrome.storage.sync.set({ colors: colorOptions });
 }
 
 function getColorOptions() {
@@ -255,6 +243,6 @@ function getColorOptions() {
                     textColor: 'rgb(255, 255, 255)',
                 },
             ],
-        }, ({colors}) => resolve(colors));
+        }, ({ colors }) => resolve(colors));
     });
 }
