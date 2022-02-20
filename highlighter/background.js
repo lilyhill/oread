@@ -2,9 +2,15 @@
 
 // NOTE: This file must be in the top-level directory of the extension according to the docs
 
-import { executeInCurrentTab } from './src/background/utils.js';
+import {executeInCurrentTab} from './src/background/utils.js';
 
 const DEFAULT_COLOR_TITLE = "yellow";
+
+var base = "";
+chrome.storage.sync.get(['baseUrl'], function(result) {
+    base = result.baseUrl;
+    console.log(base)
+});
 
 // Add option when right-clicking
 chrome.runtime.onInstalled.addListener(async () => {
@@ -42,8 +48,16 @@ chrome.contextMenus.onClicked.addListener(({ menuItemId, parentMenuItemId }) => 
 });
 
 // Analytics (non-interactive events)
-chrome.runtime.onInstalled.addListener(() => {
-});
+chrome.runtime.onInstalled.addListener(onInstalledCallback);
+
+function onInstalledCallback(details) {
+    //setting base url
+    const baseUrl = `https://retained-where-samsung-opt.trycloudflare.com`;
+    chrome.storage.sync.set({baseUrl: baseUrl}, (e) => {
+        console.log(`base_url is set to ${baseUrl}, ${e}`);
+    });
+
+}
 chrome.runtime.onStartup.addListener(() => {
 
 });
@@ -115,9 +129,38 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
         case 'get-color-options':
             getColorOptions().then(sendResponse);
             return true; // return asynchronously
+        case 'save-highlight':
+            saveHighlight(request).then(sendResponse);
+            return true;
     }
 });
 /* eslint-enable consistent-return */
+
+function saveHighlight(request) {
+    const data = {
+        'highlight': request.data,
+    };
+    callExtension(data).then((r) => "saved").catch();
+    return data;
+}
+
+async function callExtension(data) {
+
+    const response = await fetch(`${base}/extensionCallback/`, {
+        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        mode: 'cors', // no-cors, *cors, same-origin
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin', // include, *same-origin, omit
+        headers: {
+            'Content-Type': 'application/json',
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        redirect: 'follow', // manual, *follow, error
+        referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        body: JSON.stringify(data), // body data type must match "Content-Type" header
+    }).then((backendResponse) => backendResponse.json()).catch((reason) => "backend issue");
+    return true;
+}
 
 async function getCurrentColor() {
     const { color } = await chrome.storage.sync.get("color");

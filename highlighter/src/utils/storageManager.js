@@ -7,10 +7,8 @@ let alternativeUrlIndexOffset = 0; // Number of elements stored in the alternati
 function store(selection, container, url, href, color, textColor, callback) { /* eslint-disable-line no-redeclare, no-unused-vars */
     chrome.storage.local.get({ highlights: {} }, (result) => {
         const highlights = result.highlights;
-
         if (!highlights[url]) highlights[url] = [];
-
-        const count = highlights[url].push({
+        var highlightComplete = {
             version: STORE_FORMAT_VERSION,
             string: selection.toString(),
             container: getQuery(container),
@@ -22,7 +20,9 @@ function store(selection, container, url, href, color, textColor, callback) { /*
             textColor,
             href,
             uuid: crypto.randomUUID(),
-        });
+        };
+        chrome.runtime.sendMessage({ action: 'save-highlight', highlight: selection, data: highlightComplete }, () => {});
+        const count = highlights[url].push(highlightComplete);
         chrome.storage.local.set({ highlights });
 
         if (callback) callback(count - 1 + alternativeUrlIndexOffset);
@@ -66,6 +66,8 @@ function loadAll(url, alternativeUrl) { /* eslint-disable-line no-redeclare, no-
         alternativeUrlIndexOffset = highlights.length;
 
         highlights = highlights.concat(result.highlights[url] || []);
+
+        console.log(highlights);
 
         if (!highlights) return;
 

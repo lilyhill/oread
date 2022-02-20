@@ -5,12 +5,10 @@ from django.views.decorators.csrf import csrf_exempt
 from datetime import date
 
 from .utils.helpers import *
-import sqlite3
-from datetime import datetime, time
-import pytz
-import time
+from .forms import HighlightForm
 
 my_url = os.environ.get("BASE_URL")
+
 
 @csrf_exempt
 def telegram_callback(request):
@@ -20,7 +18,6 @@ def telegram_callback(request):
     # ic(any(key not in body["message"] for key in ["reply_to_message", "pinned_message"]))
     if "message" in body and all(key not in body["message"] for key in avoid):
         message = body["message"]
-
 
         try:
             ic("****")
@@ -48,7 +45,6 @@ def telegram_callback(request):
 
 
 def collate_dates(qset):
-
     d = {}
 
     for i in qset:
@@ -56,8 +52,8 @@ def collate_dates(qset):
             created_at = i.created_at
             stri = date.isoformat(created_at)
             o = {
-                "text":i.text,
-                "sub_text":i.sub_text
+                "text": i.text,
+                "sub_text": i.sub_text
             }
             if stri in d:
                 d[stri].append(o)
@@ -69,7 +65,7 @@ def collate_dates(qset):
                 "sub_text": i.sub_text
             }
             if "none" not in d:
-                d["none"]= [0]
+                d["none"] = [0]
             else:
                 d["none"].append(o)
 
@@ -78,7 +74,7 @@ def collate_dates(qset):
 
 @csrf_exempt
 def get_list(request, username):
-    ctx ={}
+    ctx = {}
     if request.method == 'GET':
 
         try:
@@ -93,83 +89,88 @@ def get_list(request, username):
         except Exception as e:
             ic('get_list :', e)
 
-    return render(request,"list.html", ctx)
-
-
-@csrf_exempt
-def get_username(request):
-
-    body = json.loads(request.body)
-    ic(body)
-    response = JsonResponse({"Success": True})
-    uname = body["username"]
-    obj, created = ExtensionUser.objects.get_or_create(
-        uname = uname
-    )
-
-    ic(created)
-
-    d = {
-        "url": f'https://{my_url}/e/{uname}'
-    }
-    return JsonResponse(d)
-
-@csrf_exempt
-def get_e_list(request, username):
-
-    ctx ={}
-    if request.method == 'GET':
-
-        try:
-
-            ed = list(ExtensionData.objects.filter(
-                user__uname=username
-            ))
-
-            ctx["url_list"] = collate_dates(ed)
-            ic(ctx)
-
-        except Exception as e:
-            ic('get_e_list :', e)
-
     return render(request, "list.html", ctx)
 
 
 @csrf_exempt
+def save_username(request):
+    body = json.loads(request.body)
+    ic(body)
+    uname = body["username"]
+
+    allhighlights = get_e_data(uname)
+
+    d = {
+        "url": f'https://{my_url}/e/{uname}',
+        "highlights": allhighlights,
+    }
+
+    return JsonResponse(d)
+
+
+@csrf_exempt
+def get_e_list(request, username):
+    ctx = {}
+    if request.method == 'GET':
+
+       ctx["url_list"] = get_e_data(uname=username)
+
+    return render(request, "list.html", ctx)
+
+
+def get_e_data(uname):
+    euserobj, created = ExtensionUser.objects.get_or_create(
+        uname=uname
+    )
+    allhighlights = []
+    if not created:
+        highlights = ExtensionHighlightMetaData.objects.filter(
+            edata__user=euserobj
+        )
+
+        for highlight in highlights:
+            # highlightbody = {
+            #     "string": highlight.color,
+            #     "container": highlight.container,
+            #     "anchorNode": highlight.anchorNode,
+            #     "anchorOffset": highlight.anchorOffset,
+            #     "focusNode": highlight.focusNode,
+            #     "focusOffset": highlight.focusOffset,
+            #     "color": highlight.color,
+            #     "href": highlight.edata.href,
+            #     "uuid": highlight.uuid,
+            # }
+            highlightbody = {
+
+            }
+            allhighlights.append(highlightbody)
+        ic(allhighlights)
+
+    return allhighlights
+
+
+@csrf_exempt
 def save_e_value(request):
-
-
-    try:
-        body = json.loads(request.body)
-        eu = list(ExtensionUser.objects.filter(
-            uname = body["username"]
-        ))
-        if eu:
-
-            today = date.today()
-            edl = list(ExtensionData.objects.filter(
-                user = eu[0],
-                text = body["url"],
-                created_at__year=today.year,
-                created_at__month=today.month,
-                created_at__day=today.day,
-
-            ))
-            if edl:
-                ed = edl[0]
-                ed.sub_text += f'<li>{body["selection"]}</li>'
-                ed.save()
-            else:
-                ed = ExtensionData.objects.create(
-                    user=eu[0],
-                    text = body["url"],
-                    sub_text = f'<li>{body["selection"]}</li>',
-                    created_at =datetime.now()
-                )
-                ed.save()
-
-    except Exception as e:
-        ic(e)
-        ic(request.body)
-
+    body = json.loads(request.body)
+    highlightData = body['highlight']
+    highlight = HighlightForm(highlightData)
+    if highlight.is_valid():
+        extension = ExtensionData.objects.get_or_create(
+            user__uname=body['username'],
+            href=highlightData["href"]
+        )
+        meta_data = ExtensionHighlightMetaData(
+            edata=extension,
+            anchorNode=highlight.anchorNode,
+            anchorOffset=highlight.anchorOffset,
+            color=highlight.color,
+            container=highlight.container,
+            focusNode=highlight.focusNode,
+            focusOffset=highlight.focusOffset,
+            text=highlight.text,
+            uuid=highlight.uuid,
+        )
+        meta_data.save()
+        ic(meta_data)
+    ic(highlight)
     return JsonResponse({"success": True})

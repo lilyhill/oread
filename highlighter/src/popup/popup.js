@@ -1,6 +1,6 @@
-import { getFromBackgroundPage } from "./utils.js";
-import { open as openRemoveAllModal } from "./remove-all-modal.js";
-import { open as openChangeColorModal } from "./change-color-modal.js";
+import {getFromBackgroundPage} from "./utils.js";
+import {open as openRemoveAllModal} from "./remove-all-modal.js";
+import {open as openChangeColorModal} from "./change-color-modal.js";
 
 
 const highlightButton = document.getElementById('toggle-button');
@@ -8,6 +8,7 @@ const removeAllButton = document.getElementById('remove-all-button');
 const copyAllButton = document.getElementById('copy-all-button');
 const closeButton = document.getElementById('close-button');
 const changeColorButton = document.getElementById('change-color-button');
+const submitButton = document.getElementById('uname-form');
 
 const colorsListElement = document.getElementById('colors-list');
 const selectedColorElement = document.getElementById('selected-color');
@@ -16,15 +17,21 @@ const shortcutLinkTextElement = document.getElementById('shortcut-link-text');
 const highlightsListElement = document.getElementById('highlights-list');
 const highlightsEmptyStateElement = document.getElementById('highlights-list-empty-state');
 const highlightsListLostTitleElement = document.getElementById('highlights-list-lost-title');
+var res = document.getElementById('result');
 
+var base = "";
+chrome.storage.sync.get(['baseUrl'], function(result) {
+    base = result.baseUrl;
+    console.log(base)
+});
 
 function colorChanged(colorOption) {
-    const { backgroundColor, borderColor } = colorOption.style;
-    const { colorTitle } = colorOption.dataset;
+    const {backgroundColor, borderColor} = colorOption.style;
+    const {colorTitle} = colorOption.dataset;
 
     // Swap (in the UI) the previous selected color and the newly selected one
-    const { backgroundColor: previousBackgroundColor, borderColor: previousBorderColor } = selectedColorElement.style;
-    const { colorTitle: previousColorTitle } = selectedColorElement.dataset;
+    const {backgroundColor: previousBackgroundColor, borderColor: previousBorderColor} = selectedColorElement.style;
+    const {colorTitle: previousColorTitle} = selectedColorElement.dataset;
     colorOption.style.backgroundColor = previousBackgroundColor;
     colorOption.style.borderColor = previousBorderColor;
     colorOption.dataset.colorTitle = previousColorTitle;
@@ -33,16 +40,16 @@ function colorChanged(colorOption) {
     selectedColorElement.dataset.colorTitle = colorTitle;
 
     // Change the global highlighter color
-    chrome.runtime.sendMessage({ action: 'change-color', color: colorTitle, source: 'popup' });
+    chrome.runtime.sendMessage({action: 'change-color', color: colorTitle, source: 'popup'});
 }
 
 function toggleHighlighterCursor() {
-    chrome.runtime.sendMessage({ action: 'toggle-highlighter-cursor', source: 'popup' });
+    chrome.runtime.sendMessage({action: 'toggle-highlighter-cursor', source: 'popup'});
     window.close();
 }
 
 function copyHighlights() {
-    chrome.runtime.sendMessage({ action: 'track-event', trackCategory: 'highlight-action', trackAction: 'copy-all' });
+    chrome.runtime.sendMessage({action: 'track-event', trackCategory: 'highlight-action', trackAction: 'copy-all'});
     navigator.clipboard.writeText(highlightsListElement.innerText);
 
     // Let the user know the copy went through
@@ -85,7 +92,7 @@ function updateHighlightsListState() {
 }
 
 (async function initializeHighlightsList() {
-    const highlights = await getFromBackgroundPage({ action: 'get-highlights' });
+    const highlights = await getFromBackgroundPage({action: 'get-highlights'});
 
     if (!Array.isArray(highlights) || highlights.length == 0) {
         updateHighlightsListState();
@@ -99,7 +106,7 @@ function updateHighlightsListState() {
         newEl.innerText = highlights[i + 1];
         const highlightId = highlights[i];
         newEl.addEventListener('click', () => {
-            chrome.runtime.sendMessage({ action: 'show-highlight', highlightId });
+            chrome.runtime.sendMessage({action: 'show-highlight', highlightId});
         });
         highlightsListElement.appendChild(newEl);
     }
@@ -108,8 +115,8 @@ function updateHighlightsListState() {
 })();
 
 (async function initializeColorsList() {
-    const color = await getFromBackgroundPage({ action: 'get-current-color' });
-    const colorOptions = await getFromBackgroundPage({ action: 'get-color-options' });
+    const color = await getFromBackgroundPage({action: 'get-current-color'});
+    const colorOptions = await getFromBackgroundPage({action: 'get-color-options'});
 
     colorOptions.forEach((colorOption) => {
         const colorTitle = colorOption.title;
@@ -144,9 +151,9 @@ function updateHighlightsListState() {
 
 (async function initializeLostHighlights() {
     updateHighlightsListState();
-    const lostHighlights = await getFromBackgroundPage({ action: 'get-lost-highlights' });
+    const lostHighlights = await getFromBackgroundPage({action: 'get-lost-highlights'});
 
-    if (!Array.isArray(lostHighlights) || lostHighlights.length == 0) {
+    if (!Array.isArray(lostHighlights) || lostHighlights.length === 0) {
         return;
     }
 
@@ -161,7 +168,7 @@ function updateHighlightsListState() {
         newDeleteIconEl.classList.add('material-icons', 'delete-icon');
         newDeleteIconEl.innerText = 'delete';
         newDeleteIconEl.onclick = () => {
-            chrome.runtime.sendMessage({ action: 'remove-highlight', highlightId: lostHighlight.index }, () => {
+            chrome.runtime.sendMessage({action: 'remove-highlight', highlightId: lostHighlight.index}, () => {
                 newEl.remove();
                 updateHighlightsListState();
             });
@@ -173,18 +180,71 @@ function updateHighlightsListState() {
     updateHighlightsListState();
 })();
 
+function saveUsername(event) {
+
+    // get element name
+    const curUname = document.getElementById('uname').value;
+    console.log({curUname, base});
+    document.cookie = `uname=${curUname};`; // add it to cookie
+    // request body
+    const data = {
+        username: curUname,
+    };
+    console.log(`${base}/saveUsername/`);
+    fetch(`${base}/saveUsername/`, {
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+
+        },
+        redirect: 'follow',
+        referrerPolicy: 'no-referrer',
+        body: JSON.stringify(data),
+    })
+        .then((response) => response.json())
+        .then((jsonResponse) => {
+
+            var uname = curUname;
+
+            chrome.storage.sync.set({username: uname}, () => {});
+
+            const url = jsonResponse.url;
+            res.innerHTML = `<a href=${url}>${url}</a>`;
+        }).catch();
+    event.preventDefault();
+    console.log("fetched data")
+}
+
+function ifUsernamePresentcb (result){
+
+    var uname = result.username;
+    let url = `${base}/e/${uname}`;
+    res.innerHTML = `<a href=${url}>${url}</a>`;
+
+}
+
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    chrome.storage.sync.get(['username'], ifUsernamePresentcb);
+
+    document.getElementById('uname-form').addEventListener('submit', (e) => {saveData(e)}, false);
+
+});
+
 // Register Events
 highlightButton.addEventListener('click', toggleHighlighterCursor);
 copyAllButton.addEventListener('click', copyHighlights);
 removeAllButton.addEventListener('click', openRemoveAllModal);
 changeColorButton.addEventListener('click', openChangeColorModal);
 selectedColorElement.addEventListener('click', openChangeColorModal);
+submitButton.addEventListener('submit', saveUsername);
 
 shortcutLinkElement.addEventListener('click', () => { // Open the shortcuts Chrome settings page in a new tab
-    chrome.tabs.create({ url: "chrome://extensions/shortcuts" });
+    chrome.tabs.create({url: "chrome://extensions/shortcuts"});
 });
 
 closeButton.addEventListener('click', () => window.close());
-
-// Register (in analytics) that the popup was opened
-chrome.runtime.sendMessage({ action: 'track-event', trackCategory: 'popup', trackAction: 'opened' });
