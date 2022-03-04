@@ -65,7 +65,7 @@ def collate_dates(qset):
                 "sub_text": i.sub_text
             }
             if "none" not in d:
-                d["none"] = [0]
+                d["none"] = [o]
             else:
                 d["none"].append(o)
 
@@ -99,6 +99,9 @@ def save_username(request):
     uname = body["username"]
 
     allhighlights = get_e_data(uname)
+    euser, created = ExtensionUser.objects.get_or_create(
+        uname=body['username']
+    )
 
     d = {
         "url": f'https://{my_url}/e/{uname}',
@@ -111,64 +114,85 @@ def save_username(request):
 @csrf_exempt
 def get_e_list(request, username):
     ctx = {}
+    ic(request)
     if request.method == 'GET':
 
-       ctx["url_list"] = get_e_data(uname=username)
+       ctx["data"] = get_e_data(uname=username)
 
-    return render(request, "list.html", ctx)
+    ic(ctx, username)
+
+    return render(request, "Elist.html", ctx)
 
 
 def get_e_data(uname):
     euserobj, created = ExtensionUser.objects.get_or_create(
         uname=uname
     )
-    allhighlights = []
+    ic(created)
+    ic(euserobj)
     if not created:
-        highlights = ExtensionHighlightMetaData.objects.filter(
-            edata__user=euserobj
-        )
-
-        for highlight in highlights:
-            # highlightbody = {
-            #     "string": highlight.color,
-            #     "container": highlight.container,
-            #     "anchorNode": highlight.anchorNode,
-            #     "anchorOffset": highlight.anchorOffset,
-            #     "focusNode": highlight.focusNode,
-            #     "focusOffset": highlight.focusOffset,
-            #     "color": highlight.color,
-            #     "href": highlight.edata.href,
-            #     "uuid": highlight.uuid,
-            # }
-            highlightbody = {
-
-            }
-            allhighlights.append(highlightbody)
-        ic(allhighlights)
+        allhighlights = {}
+        if not created:
+            highlights = ExtensionHighlightMetaData.objects.filter(edata__user=euserobj)
+            for i in highlights:
+                ic(i.text)
+                created_date = date.isoformat(i.created_at)
+                url = i.edata.href
+                if created_date in allhighlights:
+                    if url in allhighlights[created_date]:
+                        allhighlights[created_date][url].append(i.text)
+                    else:
+                        allhighlights[created_date][url] = [i.text]
+                else:
+                    allhighlights[created_date] = {
+                        url : [i.text]
+                    }
 
     return allhighlights
 
+
+def collate_data(data):
+
+    res = {}
+
+    for i in data:
+        d = date.isoformat(i.created_at)
+        if d in res:
+            res[d][d.edata.href].append(d.text)
+        else:
+            res[d] = {
+                d.edata.href: [d.text],
+            }
+    return res
 
 @csrf_exempt
 def save_e_value(request):
     body = json.loads(request.body)
     highlightData = body['highlight']
+    ic(body)
     highlight = HighlightForm(highlightData)
     if highlight.is_valid():
-        extension = ExtensionData.objects.get_or_create(
-            user__uname=body['username'],
+        ic(highlight)
+
+        euser, created = ExtensionUser.objects.get_or_create(
+            uname = body['username']
+        )
+        ic(euser)
+        extension, created = ExtensionData.objects.get_or_create(
+            user = euser,
             href=highlightData["href"]
         )
+        ic(extension)
         meta_data = ExtensionHighlightMetaData(
             edata=extension,
-            anchorNode=highlight.anchorNode,
-            anchorOffset=highlight.anchorOffset,
-            color=highlight.color,
-            container=highlight.container,
-            focusNode=highlight.focusNode,
-            focusOffset=highlight.focusOffset,
-            text=highlight.text,
-            uuid=highlight.uuid,
+            anchorNode=highlightData["anchorNode"],
+            anchorOffset=highlightData["anchorOffset"],
+            color=highlightData["color"],
+            container=highlightData["container"],
+            focusNode=highlightData["focusNode"],
+            focusOffset=highlightData["focusOffset"],
+            text=highlightData["string"],
+            uuid=highlightData["uuid"],
         )
         meta_data.save()
         ic(meta_data)

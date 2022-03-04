@@ -52,7 +52,7 @@ MIDDLEWARE = [
 base = os.environ.get("URI")
 
 CSRF_TRUSTED_ORIGINS = [base]
-
+print(CSRF_TRUSTED_ORIGINS)
 ROOT_URLCONF = 'olivier.urls'
 
 TEMPLATES = [

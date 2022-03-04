@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+<h1>Lists of URLs that you sent</h1>
+{% if url_list %}
+{% for key,date in data.items %}
+    <p>{{ key }}</p>
+    <ul>
+    {% for url,textlist in date.items %}
+        <li> {{ url }} </li>
+        {% for text in textlist%}
+        <ul>
+            {{ text | safe }}
+        </ul>
+        {% endfor %}
+    {% endfor %}
+    </ul>
+{% endfor %}
+{% endif %}
+
+{% endblock %}

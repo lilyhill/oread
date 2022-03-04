@@ -6,11 +6,10 @@ import {executeInCurrentTab} from './src/background/utils.js';
 
 const DEFAULT_COLOR_TITLE = "yellow";
 
-var base = "";
-chrome.storage.sync.get(['baseUrl'], function(result) {
-    base = result.baseUrl;
-    console.log(base)
-});
+const base = "https://detector-horse-involves-douglas.trycloudflare.com";
+
+var uname = "";
+
 
 // Add option when right-clicking
 chrome.runtime.onInstalled.addListener(async () => {
@@ -47,19 +46,25 @@ chrome.contextMenus.onClicked.addListener(({ menuItemId, parentMenuItemId }) => 
     }
 });
 
+
+function setUsername () {
+    //setting base url
+    chrome.storage.sync.set({baseUrl: base}, (e) => {
+        console.log(`base_url is set to ${base}, ${e}`);
+    });
+    chrome.storage.sync.get(['username'], (e) => {
+        uname = e.username;
+    });
+}
+
 // Analytics (non-interactive events)
 chrome.runtime.onInstalled.addListener(onInstalledCallback);
 
 function onInstalledCallback(details) {
-    //setting base url
-    const baseUrl = `https://retained-where-samsung-opt.trycloudflare.com`;
-    chrome.storage.sync.set({baseUrl: baseUrl}, (e) => {
-        console.log(`base_url is set to ${baseUrl}, ${e}`);
-    });
-
+setUsername();
 }
 chrome.runtime.onStartup.addListener(() => {
-
+setUsername();
 });
 
 // Add Keyboard shortcuts
@@ -139,6 +144,7 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
 function saveHighlight(request) {
     const data = {
         'highlight': request.data,
+        'username' : uname,
     };
     callExtension(data).then((r) => "saved").catch();
     return data;

@@ -1,4 +1,5 @@
-from datetime import timezone
+import time
+from datetime import datetime
 
 from django.db import models
 
@@ -43,17 +44,15 @@ class ExtensionUser(models.Model):
 
 
 class ExtensionData(models.Model):
-    user = models.ForeignKey(ExtensionUser, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(ExtensionUser, on_delete=models.CASCADE, null=True, )
     href = models.URLField(null=True)
-    created_at = models.DateTimeField()
-
-    def save(self, *args, **kwargs):
-
-        self.created_at = timezone.now()
-        return super(User, self).save(*args, **kwargs)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.user.uname
+        if self.user:
+            return self.user.uname
+        else:
+            return "none"
 
 
 class ExtensionHighlightMetaData(models.Model):
@@ -67,11 +66,16 @@ class ExtensionHighlightMetaData(models.Model):
     focusOffset = models.TextField(max_length=10000, null=True)
     text = models.TextField(max_length=1000000, null=True, default="")  # Alias for string
     uuid = models.TextField(max_length=100, null=True)
-    created_at = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
-    def save(self, *args, **kwargs):
-        self.created_at = timezone.now()
-        return super(User, self).save(*args, **kwargs)
+    def __str__(self):
+        if self.edata:
+            return f'{self.edata.user}'
+        else:
+            return "none"
+    # def save(self, *args, **kwargs):
+    #     self.created_at = datetime.now()
+    #     return super(User, self).save(*args, **kwargs)
 
 
 # class Url(models.Model):

@@ -9,6 +9,7 @@ class HighlightForm(forms.Form):
     focusNode = forms.CharField(max_length=10000, )
     focusOffset = forms.CharField(max_length=10000, )
     href = forms.URLField()
-    text = forms.CharField(max_length=1000000,) # Alias for string
+    string = forms.CharField(max_length=1000000,) # Alias for string
+    textColor = forms.CharField(max_length=1000)
     uuid = forms.CharField(max_length=100, )
     version = forms.CharField(max_length=100, )
