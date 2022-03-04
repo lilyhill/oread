@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Highlighter</title>
+
+    <meta name="viewport" content="width=562 height=780 initial-scale=1 maximum-scale=1">
+    <meta charset="utf-8">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Catamaran:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="popup.css">
+    <link rel="stylesheet" type="text/css" href="modal.css">
+</head>
+
+<body>
+    <div id="title-section">
+        <object class="highlighter-icon" data="../../images/logo.svg" type="image/svg+xml"></object>
+        <h1>Highlighter</h1>
+    </div>
+
+    <div id="close-button" class="material-icons">
+        close
+    </div>
+
+    <div id="settings-section">
+        <div id="colors-section">
+            <div id="selected-color" class="color" style="background-color: #fff615;">
+                <div id="change-color-button" class="material-icons">edit</div>
+            </div>
+            <div id="colors-list">
+                <!-- A list of <div class="color"> elements goes here -->
+            </div>
+        </div>
+        <div id="controls-section">
+            <div id="toggle-button">Toggle cursor</div>
+            <div id="shortcut-section" title="Highlight the currently selected text using this keyboard shortcut">
+                <span>Highlight shortcut: </span>
+                <span id="shortcut-link">
+                    <span id="shortcut-link-text">Alt+H</span>
+                    <span class="material-icons">edit</span>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div id="highlights-section">
+        <div id="tools">
+            <div class="tool" id="remove-all-button">
+                <span>Delete all</span>
+                <span class="material-icons">delete</span>
+            </div>
+            <div class="tool" id="copy-all-button">
+                <span>Copy all</span>
+                <span class="material-icons">file_copy</span>
+            </div>
+        </div>
+        <div id="highlights-list">
+            <!-- A list of <div class="highlight"> elements goes here -->
+            <div id="highlights-list-empty-state">There are no highlights on this page</div>
+            <div id="highlights-list-lost-title" title="Highlights that Highlighter cannot find anymore because there were changes to this webpage">Lost highlights on this page:</div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="remove-all-confirmation-modal" class="modal">
+        <p class="modal-text">Are you sure you want to delete all highlights on this page? This operation cannot be
+            undone.</p>
+        <div class="modal-actions">
+            <div class="modal-button modal-action-cancel" id="remove-all-cancel">Cancel</div>
+            <div class="modal-button modal-action-confirm" id="remove-all-confirm">Confirm</div>
+        </div>
+    </div>
+    <div id="change-color-modal" class="modal">
+        <h2 class="modal-title">Customize the "<span id="change-color-title">yellow</span>" color</h2>
+        <form id="change-color-form">
+            <div>
+                <fieldset>
+                    <label for="highlight-color">Highlight Color:</label>
+                    <input type="color" name="highlight-color" />
+                </fieldset>
+                <fieldset>
+                    <fieldset>
+                        <input type="checkbox" name="use-text-color" />
+                        <label for="use-text-color">Change text color</label>
+                    </fieldset>
+                    <fieldset disabled id="text-color-fieldset">
+                        <label for="text-color">Text Color:</label>
+                        <input type="color" name="text-color" />
+                    </fieldset>
+                </fieldset>
+            </div>
+
+            <div class="modal-actions">
+                <div class="modal-button modal-action-cancel" id="change-color-cancel">Cancel</div>
+                <input type="submit" class="modal-button modal-action-confirm" value="Confirm" />
+            </div>
+        </form>
+    </div>
+    <form name="myform" id="uname-form">
+        <label for="uname">username:</label><br>
+        <input type="text" id="uname" name="uname"><br>
+        <input name="Submit"  type="submit" value="Submit" />
+    </form>
+    <div id="result"></div>
+    <script type="module" src="popup.js"></script>
+</body>
+
+</html>

@@ -35,7 +35,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'scroll'
+    'scroll',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -51,7 +52,7 @@ MIDDLEWARE = [
 base = os.environ.get("URI")
 
 CSRF_TRUSTED_ORIGINS = [base]
-
+print(CSRF_TRUSTED_ORIGINS)
 ROOT_URLCONF = 'olivier.urls'
 
 TEMPLATES = [

@@ -1,0 +1,49 @@
+.highlighter--highlighted.highlighter--hovered {
+    box-shadow: 0 1px 0 grey;
+}
+
+#highlighter--hover-tools {
+    position: fixed;
+    padding-bottom: 8px;
+    z-index: 10000;
+}
+
+#highlighter--hover-tools--container {
+    position: relative;
+    border-radius: 5px;
+    padding: 1px 0;
+    background-color: #f0f0f0;
+    width: 108px; /* When changing this, also update moveToolbarToHighlight() in hoverTools.js */
+    height: 37px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    filter: drop-shadow(1px 2px 3px rgba(0, 0, 0, 0.25));
+}
+
+.highlighter--icon {
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    margin: 0 4px;
+}
+
+.highlighter--icon:hover {
+    filter: opacity(0.92);
+}
+
+.highlighter--icon-copy {
+    background-image:url('chrome-extension://__MSG_@@extension_id__/images/file_copy.svg');
+}
+
+.highlighter--icon-delete {
+    background-image:url('chrome-extension://__MSG_@@extension_id__/images/delete.svg');
+}
+
+.highlighter--icon-change-color {
+    background-image:url('chrome-extension://__MSG_@@extension_id__/images/color_lens.svg');
+}
