@@ -91,6 +91,19 @@ def get_list(request, username):
 
     return render(request, "list.html", ctx)
 
+def collate_data(data):
+
+    res = {}
+
+    for i in data:
+        d = date.isoformat(i.created_at)
+        if d in res:
+            res[d][d.edata.href].append(d.text)
+        else:
+            res[d] = {
+                d.edata.href: [d.text],
+            }
+    return res
 
 @csrf_exempt
 def save_username(request):
@@ -134,8 +147,10 @@ def get_e_data(uname):
         allhighlights = {}
         if not created:
             highlights = ExtensionHighlightMetaData.objects.filter(edata__user=euserobj)
+            ic(list(highlights))
             for i in highlights:
                 ic(i.text)
+                print(i.text)
                 created_date = date.isoformat(i.created_at)
                 url = i.edata.href
                 if created_date in allhighlights:
@@ -143,6 +158,7 @@ def get_e_data(uname):
                         allhighlights[created_date][url].append(i.text)
                     else:
                         allhighlights[created_date][url] = [i.text]
+
                 else:
                     allhighlights[created_date] = {
                         url : [i.text]
@@ -150,20 +166,6 @@ def get_e_data(uname):
 
     return allhighlights
 
-
-def collate_data(data):
-
-    res = {}
-
-    for i in data:
-        d = date.isoformat(i.created_at)
-        if d in res:
-            res[d][d.edata.href].append(d.text)
-        else:
-            res[d] = {
-                d.edata.href: [d.text],
-            }
-    return res
 
 @csrf_exempt
 def save_e_value(request):
@@ -183,6 +185,7 @@ def save_e_value(request):
             href=highlightData["href"]
         )
         ic(extension)
+        print()
         meta_data = ExtensionHighlightMetaData(
             edata=extension,
             anchorNode=highlightData["anchorNode"],
