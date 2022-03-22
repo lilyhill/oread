@@ -6,9 +6,11 @@ import {executeInCurrentTab} from './src/background/utils.js';
 
 const DEFAULT_COLOR_TITLE = "yellow";
 
-const base = "https://detector-horse-involves-douglas.trycloudflare.com";
+const base = "https://derek-maryland-admissions-passwords.trycloudflare.com";
 
 var uname = "";
+
+setUsername();
 
 
 // Add option when right-clicking
@@ -57,7 +59,7 @@ function setUsername () {
     });
 }
 
-// Analytics (non-interactive events)
+
 chrome.runtime.onInstalled.addListener(onInstalledCallback);
 
 function onInstalledCallback(details) {
