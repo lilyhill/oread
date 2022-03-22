@@ -7,10 +7,12 @@ venv/*
 
 **/__pycache__/*
 olivier/scroll/db.sqlite3
-olivier/db.sqlite3
+backup/db.sqlite3
 
 olivier/rough/*
 
 olivier/assets/*
 
 *.DS_Store
+
+backup/*
