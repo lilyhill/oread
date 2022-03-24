@@ -10,6 +10,6 @@ class HighlightForm(forms.Form):
     focusOffset = forms.CharField(max_length=10000, )
     href = forms.URLField()
     string = forms.CharField(max_length=1000000,) # Alias for string
-    textColor = forms.CharField(max_length=1000)
+    textColor = forms.CharField(max_length=1000, required=False)
     uuid = forms.CharField(max_length=100, )
     version = forms.CharField(max_length=100, )

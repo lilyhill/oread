@@ -190,7 +190,6 @@ function saveUsername(event) {
     const data = {
         username: curUname,
     };
-    console.log(`${base}/saveUsername/`);
     fetch(`${base}/saveUsername/`, {
         method: 'POST',
         mode: 'cors',
@@ -230,8 +229,6 @@ function ifUsernamePresentcb (result){
 document.addEventListener('DOMContentLoaded', () => {
 
     chrome.storage.sync.get(['username'], ifUsernamePresentcb);
-
-    document.getElementById('uname-form').addEventListener('submit', (e) => {saveData(e)}, false);
 
 });
 

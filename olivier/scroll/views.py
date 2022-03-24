@@ -111,14 +111,8 @@ def save_username(request):
     ic(body)
     uname = body["username"]
 
-    allhighlights = get_e_data(uname)
-    euser, created = ExtensionUser.objects.get_or_create(
-        uname=body['username']
-    )
-
     d = {
         "url": f'https://{my_url}/e/{uname}',
-        "highlights": allhighlights,
     }
 
     return JsonResponse(d)
@@ -143,26 +137,26 @@ def get_e_data(uname):
     )
     ic(created)
     ic(euserobj)
-    if not created:
-        allhighlights = {}
-        if not created:
-            highlights = ExtensionHighlightMetaData.objects.filter(edata__user=euserobj)
-            ic(list(highlights))
-            for i in highlights:
-                ic(i.text)
-                print(i.text)
-                created_date = date.isoformat(i.created_at)
-                url = i.edata.href
-                if created_date in allhighlights:
-                    if url in allhighlights[created_date]:
-                        allhighlights[created_date][url].append(i.text)
-                    else:
-                        allhighlights[created_date][url] = [i.text]
+    allhighlights = {}
 
+    if not created:
+        highlights = ExtensionHighlightMetaData.objects.filter(edata__user=euserobj)
+        ic(list(highlights))
+        for i in highlights:
+            ic(i.text)
+            print(i.text)
+            created_date = date.isoformat(i.created_at)
+            url = i.edata.href
+            if created_date in allhighlights:
+                if url in allhighlights[created_date]:
+                    allhighlights[created_date][url].append(i.text)
                 else:
-                    allhighlights[created_date] = {
-                        url : [i.text]
-                    }
+                    allhighlights[created_date][url] = [i.text]
+
+            else:
+                allhighlights[created_date] = {
+                    url : [i.text]
+                }
 
     return allhighlights
 
@@ -179,6 +173,7 @@ def save_e_value(request):
         euser, created = ExtensionUser.objects.get_or_create(
             uname = body['username']
         )
+        ic(created)
         ic(euser)
         extension, created = ExtensionData.objects.get_or_create(
             user = euser,
@@ -199,5 +194,6 @@ def save_e_value(request):
         )
         meta_data.save()
         ic(meta_data)
-    ic(highlight)
+    else:
+        ic(highlight.errors)
     return JsonResponse({"success": True})

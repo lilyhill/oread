@@ -37,7 +37,7 @@ class TelegramData(models.Model):
 
 class ExtensionUser(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    uname = models.CharField(max_length=10, null=True)
+    uname = models.CharField(max_length=10, null=True, unique=True)
 
     def __str__(self):
         return self.uname

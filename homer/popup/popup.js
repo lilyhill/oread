@@ -12,7 +12,7 @@ chrome.storage.sync.get(['base_url'],function(result) {
 function saveData(event) {
 
     //get element name
-    cur_uname =document.getElementById('uname').value
+    cur_uname = document.getElementById('uname').value
     document.cookie="uname="+cur_uname+";"; //add it to cookie
 
     //request body
