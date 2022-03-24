@@ -6,7 +6,7 @@ import {executeInCurrentTab} from './src/background/utils.js';
 
 const DEFAULT_COLOR_TITLE = "yellow";
 
-const base = "https://derek-maryland-admissions-passwords.trycloudflare.com";
+const base = "https://oread.com";
 
 var uname = "";
 
