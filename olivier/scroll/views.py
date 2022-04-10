@@ -81,7 +81,7 @@ def get_list(request, username):
 
             td = list(TelegramData.objects.filter(
                 primary_msg__user__user__username=username
-            ))
+            ))[::-1]
 
             ctx["url_list"] = collate_dates(td)
             ic(ctx)
@@ -140,8 +140,7 @@ def get_e_data(uname):
     allhighlights = {}
 
     if not created:
-        highlights = ExtensionHighlightMetaData.objects.filter(edata__user=euserobj)
-        ic(list(highlights))
+        highlights = list(ExtensionHighlightMetaData.objects.filter(edata__user=euserobj))[::-1]
         for i in highlights:
             ic(i.text)
             print(i.text)

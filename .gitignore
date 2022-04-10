@@ -16,3 +16,4 @@ olivier/assets/*
 *.DS_Store
 
 backup/*
+*.sqlite3
