@@ -4,13 +4,13 @@
 <h1>Lists of URLs that you sent</h1>
 {% if data %}
 {% for date, content in data.items %}
-    <p>{{ date }}</p>
+    <p>##{{ date }}</p>
     <ul>
     {% for url,textlist in content.items %}
-        <li> {{ url }} </li>
+        <li> [ {{ textlist.0 | safe }} ]({{ url }}) </li>
         {% for text in textlist%}
         <ul>
-            {{ text | safe }}
+            <li>{{ text | safe }}</li>
         </ul>
         {% endfor %}
     {% endfor %}
