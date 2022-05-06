@@ -8,7 +8,7 @@
     <ul>
     {% for url,textlist in content.items %}
         <li>- [ {{ textlist.0 | safe }} ]({{ url }}) </li>
-        {% for text in textlist[::-1]%}
+        {% for text in textlist%}
             {% if not textlist.0 == text %}
             <ul>
                 <li> - {{ text | safe }}</li>
