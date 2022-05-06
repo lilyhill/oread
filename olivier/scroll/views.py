@@ -3,9 +3,9 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.csrf import csrf_exempt
 
 from datetime import date
-
+import random
 from .utils.helpers import *
-from .forms import HighlightForm
+from .forms import *
 
 my_url = os.environ.get("BASE_URL")
 
@@ -13,14 +13,12 @@ my_url = os.environ.get("BASE_URL")
 @csrf_exempt
 def telegram_callback(request):
     body = json.loads(request.body)
-    ic(body)
     avoid = ["reply_to_message", "pinned_message"]
     # ic(any(key not in body["message"] for key in ["reply_to_message", "pinned_message"]))
     if "message" in body and all(key not in body["message"] for key in avoid):
         message = body["message"]
 
         try:
-            ic("****")
             if "reply_to_message" not in message and "pinned_message" not in message:
                 handle_message(message)
 
@@ -39,7 +37,7 @@ def telegram_callback(request):
 
         handle_reply(body["message"])
     else:
-        ic(body)
+        pass
 
     return JsonResponse({'foo': 'bar'})
 
@@ -84,15 +82,14 @@ def get_list(request, username):
             ))[::-1]
 
             ctx["url_list"] = collate_dates(td)
-            ic(ctx)
 
         except Exception as e:
-            ic('get_list :', e)
+            pass
 
     return render(request, "list.html", ctx)
 
-def collate_data(data):
 
+def collate_data(data):
     res = {}
 
     for i in data:
@@ -104,6 +101,7 @@ def collate_data(data):
                 d.edata.href: [d.text],
             }
     return res
+
 
 @csrf_exempt
 def save_username(request):
@@ -121,12 +119,9 @@ def save_username(request):
 @csrf_exempt
 def get_e_list(request, username):
     ctx = {}
-    ic(request)
+
     if request.method == 'GET':
-
-       ctx["data"] = get_e_data(uname=username)
-
-    ic(ctx, username)
+        ctx["data"] = get_e_data(uname=username)
 
     return render(request, "Elist.html", ctx)
 
@@ -135,14 +130,12 @@ def get_e_data(uname):
     euserobj, created = ExtensionUser.objects.get_or_create(
         uname=uname
     )
-    ic(created)
-    ic(euserobj)
+
     allhighlights = {}
 
     if not created:
         highlights = list(ExtensionHighlightMetaData.objects.filter(edata__user=euserobj))[::-1]
         for i in highlights:
-            ic(i.text)
             print(i.text)
             created_date = date.isoformat(i.created_at)
             url = i.edata.href
@@ -154,7 +147,7 @@ def get_e_data(uname):
 
             else:
                 allhighlights[created_date] = {
-                    url : [i.text]
+                    url: [i.text]
                 }
 
     return allhighlights
@@ -164,22 +157,18 @@ def get_e_data(uname):
 def save_e_value(request):
     body = json.loads(request.body)
     highlightData = body['highlight']
-    ic(body)
+    pass
     highlight = HighlightForm(highlightData)
     if highlight.is_valid():
-        ic(highlight)
 
         euser, created = ExtensionUser.objects.get_or_create(
-            uname = body['username']
+            uname=body['username']
         )
-        ic(created)
-        ic(euser)
+
         extension, created = ExtensionData.objects.get_or_create(
-            user = euser,
+            user=euser,
             href=highlightData["href"]
         )
-        ic(extension)
-        print()
         meta_data = ExtensionHighlightMetaData(
             edata=extension,
             anchorNode=highlightData["anchorNode"],
@@ -192,7 +181,51 @@ def save_e_value(request):
             uuid=highlightData["uuid"],
         )
         meta_data.save()
-        ic(meta_data)
+
     else:
-        ic(highlight.errors)
+        pass
     return JsonResponse({"success": True})
+
+
+@csrf_exempt
+def get_card(req, username):
+    ctx = {}
+    cards = list(Cards.objects.filter(
+        username=username
+    ))
+
+    card = random.choice(cards)
+
+    ic(card.visible)
+    ic(card.hidden)
+    ctx["card"] = {
+        "visible": card.visible,
+        "hidden": card.hidden,
+    }
+
+    return render(req, "card.html", ctx)
+
+
+@csrf_exempt
+def add_cards(req, username):
+    ctx = {}
+    if req.POST:
+        card_form = AddCardsForm(req.POST)
+        body = json.dumps(req.POST)
+        ic(body)
+        if card_form.is_valid():
+            card = Cards(
+                username=username,
+                **req.POST,
+            )
+            ctx["added"] = True
+            card.save()
+
+    form = AddCardsForm()
+    ctx["form"] = form
+    return render(req, "addcard.html", ctx)
+
+
+def get_req_body(req):
+    body = json.loads(req.body)
+    return body

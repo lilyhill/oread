@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+
+
+{% if added == True %}
+previous card added
+{% endif %}
+
+<h1>Add a new card</h1>
+
+<form method="post" novalidate>
+    {{ form }}
+    <div>
+        <button type="submit">Submit</button>
+    </div>
+</form>
+{% endblock %}

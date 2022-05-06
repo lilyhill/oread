@@ -1,7 +1,7 @@
 from django import forms
 
-class HighlightForm(forms.Form):
 
+class HighlightForm(forms.Form):
     anchorNode = forms.CharField(max_length=1000, )
     anchorOffset = forms.IntegerField()
     color = forms.CharField(max_length=1000, )
@@ -9,7 +9,13 @@ class HighlightForm(forms.Form):
     focusNode = forms.CharField(max_length=10000, )
     focusOffset = forms.CharField(max_length=10000, )
     href = forms.URLField()
-    string = forms.CharField(max_length=1000000,) # Alias for string
+    string = forms.CharField(max_length=1000000, )  # Alias for string
     textColor = forms.CharField(max_length=1000, required=False)
     uuid = forms.CharField(max_length=100, )
     version = forms.CharField(max_length=100, )
+
+
+class AddCardsForm(forms.Form):
+
+    visible = forms.CharField(max_length=1000,widget=forms.Textarea(attrs={'name': 'visible'}))
+    hidden = forms.CharField(max_length=1000,widget=forms.Textarea(attrs={'name': 'visible'}))

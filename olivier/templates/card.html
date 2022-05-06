@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+
+<h1>Card</h1>
+
+{% if card %}
+<p id="visible">
+    {{ card.visible }}
+</p>
+<button onclick="myFunction()">show</button>
+<p id="hidden" style="display: none;">
+    {{ card.hidden }}
+</p>
+
+{% endif %}
+
+<script>
+function myFunction() {
+  var x = document.getElementById("hidden");
+  if (x.style.display === "none") {
+    x.style.display = "block";
+  } else {
+    x.style.display = "none";
+  }
+}
+</script>
+
+{% endblock %}

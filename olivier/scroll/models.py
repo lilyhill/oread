@@ -73,31 +73,10 @@ class ExtensionHighlightMetaData(models.Model):
             return f'{self.edata.user}'
         else:
             return "none"
-    # def save(self, *args, **kwargs):
-    #     self.created_at = datetime.now()
-    #     return super(User, self).save(*args, **kwargs)
 
 
-# class Url(models.Model):
-#
-#     message_id = models.IntegerField(default=0)
-#     from_id = models.IntegerField(default=0)
-#     chat_id = models.IntegerField(default=0)
-#     main_text = models.TextField(max_length=10000, default="", null=True)
-#     text = models.TextField(max_length=10000, default="", null=True)
-#     created_at = models.DateTimeField(null=True)
-#     parent_id = models.ForeignKey('self', on_delete=models.CASCADE, null=True)
-#
-#
-#
-# class Messages(models.Model):
-#
-#     message_id = models.IntegerField(default=0)
-#     from_id = models.IntegerField(default=0)
-#     chat_id = models.IntegerField(default=0)
-#
-#     reply_to=models.ForeignKey('self', on_delete=models.CASCADE, null=True)
-#     msg_type = models.CharField(max_length=100, null=False)
-#     text = models.TextField(max_length=10000, default="", null=True)
-#     msg_body = models.JSONField()
-#     sent_at = models.DateTimeField(null=True)
+class Cards (models.Model):
+
+    username = models.CharField(max_length=100, null=True)
+    visible = models.TextField(max_length=1000, null=True)
+    hidden = models.TextField(max_length=1000, null=True)

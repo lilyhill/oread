@@ -4,10 +4,10 @@
 <h1>Lists of URLs that you sent</h1>
 {% if url_list %}
 {% for key,value in url_list.items %}
-    <p>{{ key }}</p>
+    <p>## {{ key }}</p>
     <ul>
     {% for i in value %}
-        <li> {{ i.text }} </li>
+        <li> [ {{ i.text }} ] </li>
         <ul>
             {% if i.sub_text %}
                 {{ i.sub_text | safe }}
