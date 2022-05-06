@@ -7,8 +7,8 @@
     <p>##{{ date }}</p>
     <ul>
     {% for url,textlist in content.items %}
-        <li>-[ {{ textlist.0 | safe }} ]({{ url }}) </li>
-        {% for text in textlist%}
+        <li>- [ {{ textlist.0 | safe }} ]({{ url }}) </li>
+        {% for text in textlist[::-1]%}
         <ul>
             <li> - {{ text | safe }}</li>
         </ul>
