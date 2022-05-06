@@ -18,8 +18,8 @@ urlpatterns = [
     # Card URLs
     path('c/<username>/',get_card),
     path('c/<username>/add', add_cards),
-
-    ]
+    path('c/<username>/all', view_all_cards),
+]
 
 
 print(urlpatterns)

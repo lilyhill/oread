@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+
+{% for card in cards %}
+
+
+<ul>
+<li>
+    {{ card.visible }}
+    <ul>
+    <li>
+    {{ card.hidden }}
+</li>
+        </ul>
+</li>
+
+</ul>
+
+{% endfor %}
+
+<p><a href="/c/{{ username }}">play cards</a></p>
+<p><a href="/c/{{ username }}/add">add cards</a></p>
+
+{% endblock %}

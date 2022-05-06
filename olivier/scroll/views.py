@@ -189,7 +189,9 @@ def save_e_value(request):
 
 @csrf_exempt
 def get_card(req, username):
-    ctx = {}
+    ctx = {
+        "username": username
+    }
     cards = list(Cards.objects.filter(
         username=username
     ))
@@ -207,16 +209,36 @@ def get_card(req, username):
 
 
 @csrf_exempt
+def view_all_cards(req, username):
+    ctx = {
+        "username": username,
+        "cards": []
+    }
+
+    cards = list(Cards.objects.filter(
+        username=username
+    ))
+
+    for card in cards:
+        ctx["cards"].append({
+            "visible": card.visible,
+            "hidden": card.hidden,
+        })
+
+    return render(req, "cards.html",ctx)
+
+@csrf_exempt
 def add_cards(req, username):
-    ctx = {}
+    ctx = {
+        "username": username
+    }
     if req.POST:
         card_form = AddCardsForm(req.POST)
-        body = json.dumps(req.POST)
-        ic(body)
+        body = json.loads(json.dumps(req.POST))
         if card_form.is_valid():
             card = Cards(
                 username=username,
-                **req.POST,
+                **body,
             )
             ctx["added"] = True
             card.save()
