@@ -1,0 +1,28 @@
+{
+  "dev": {
+    "aws_region": "ap-south-1",
+    "django_settings": "olivier.settings",
+    "profile_name": "default",
+    "project_name": "olivier",
+    "runtime": "python3.8",
+    "s3_bucket": "zappa-5uenvpk4k",
+    "apigateway_enabled": true,
+    "manage_roles": true,
+    "cors": true,
+    "use_precompiled_packages": false,
+    "environment_variable": {
+      "URI": "https://oread.pw",
+      "DEBUG": "True",
+      "ALLOWED_HOSTS": "*",
+      "SQL_ENGINE": "django.db.backends.postgresql",
+      "SQL_DATABASE": "website",
+      "SQL_USER": "suriyaganesh",
+      "SQL_PASSWORD": "letmein",
+      "SQL_HOST": "localhost",
+      "SQL_PORT": "'5432'",
+      "SECRET_KEY": "'django-insecure-yg7c+ujyv9oo_)#z3de$z8_97(87pz^l($(&h$-jb@6-7o8k#f'",
+      "TELEGRAM_KEY": "5079310524:AAEDu3_a8-RBZgPolldBJQ8A_pYAIwhcNRw",
+      "BASE_URL": "oread.pw"
+    }
+  }
+}

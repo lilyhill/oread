@@ -1,0 +1,10 @@
+{
+    "dev": {
+        "aws_region": "ap-south-1",
+        "django_settings": "orx.settings",
+        "profile_name": "default",
+        "project_name": "orx",
+        "runtime": "python3.8",
+        "s3_bucket": "zappa-y5x5avqeo"
+    }
+}
