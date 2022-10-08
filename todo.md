@@ -1,0 +1,3 @@
+- [x] Make vanilla django work on serverless
+- [ ] Make django + sqlite work.
+- [ ] setup dev config vs test
