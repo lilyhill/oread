@@ -36,7 +36,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'scroll',
-    'rest_framework'
+    'rest_framework',
+    'django_s3_sqlite'
 ]
 
 MIDDLEWARE = [
@@ -79,8 +80,9 @@ WSGI_APPLICATION = 'olivier.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django_s3_sqlite',
+        'BUCKET': 'zappa-5uenvpk4k',
+        'NAME': 'db.sqlite3',
     }
 }
 
