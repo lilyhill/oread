@@ -156,6 +156,7 @@ def get_e_data(uname):
 @csrf_exempt
 def save_e_value(request):
     body = json.loads(request.body)
+    ic(body)
     highlightData = body['highlight']
     pass
     highlight = HighlightForm(highlightData)
@@ -185,6 +186,32 @@ def save_e_value(request):
     else:
         pass
     return JsonResponse({"success": True})
+
+@csrf_exempt
+def save_e_url(req):
+    ctx = {}
+    body = json.loads(req.body)
+    ic(body)
+    ic(body['url'])
+    try:
+
+        user = ExtensionUser.objects.get(
+            uname=body['username']
+        )
+
+        edata = ExtensionData(
+            user=user,
+            href=body["url"],
+        )
+        edata.save()
+        ctx["success"] = True
+    except Exception as e:
+        ic(e)
+        ctx = {
+            "error": e,
+        }
+
+    return JsonResponse(ctx)
 
 
 @csrf_exempt
@@ -225,7 +252,8 @@ def view_all_cards(req, username):
             "hidden": card.hidden,
         })
 
-    return render(req, "cards.html",ctx)
+    return render(req, "cards.html", ctx)
+
 
 @csrf_exempt
 def add_cards(req, username):

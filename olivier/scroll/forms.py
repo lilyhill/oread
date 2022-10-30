@@ -14,8 +14,6 @@ class HighlightForm(forms.Form):
     uuid = forms.CharField(max_length=100, )
     version = forms.CharField(max_length=100, )
 
-
 class AddCardsForm(forms.Form):
-
-    visible = forms.CharField(max_length=1000,widget=forms.Textarea(attrs={'name': 'visible'}))
-    hidden = forms.CharField(max_length=1000,widget=forms.Textarea(attrs={'name': 'visible'}))
+    visible = forms.CharField(max_length=1000, widget=forms.Textarea(attrs={'name': 'visible'}))
+    hidden = forms.CharField(max_length=1000, widget=forms.Textarea(attrs={'name': 'visible'}))

@@ -43,21 +43,8 @@ class ExtensionUser(models.Model):
         return self.uname
 
 
-class ExtensionData(models.Model):
-    user = models.ForeignKey(ExtensionUser, on_delete=models.CASCADE, null=True, )
-    href = models.URLField(null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        if self.user:
-            return self.user.uname
-        else:
-            return "none"
-
-
 class ExtensionHighlightMetaData(models.Model):
 
-    edata = models.ForeignKey(ExtensionData, on_delete=models.CASCADE, null=True)
     anchorNode = models.TextField(max_length=1000, null=True)
     anchorOffset = models.IntegerField(null=True)
     color = models.TextField(max_length=1000, null=True)
@@ -69,8 +56,21 @@ class ExtensionHighlightMetaData(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        if self.edata:
-            return f'{self.edata.user}'
+        if self.created_at:
+            return f'{self.created_at}'
+        else:
+            return "none"
+
+
+class ExtensionData(models.Model):
+    edata = models.ForeignKey(ExtensionHighlightMetaData, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(ExtensionUser, on_delete=models.CASCADE, null=True, )
+    href = models.URLField(null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        if self.user:
+            return self.user.uname
         else:
             return "none"
 

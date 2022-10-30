@@ -6,7 +6,7 @@ import {executeInCurrentTab} from './src/background/utils.js';
 
 const DEFAULT_COLOR_TITLE = "yellow";
 
-const base = "https://oread.pw";
+const base = "https://9ccd-2406-7400-56-d735-9a4-40ec-50f4-b028.in.ngrok.io";
 
 var uname = "";
 
@@ -139,22 +139,41 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
         case 'save-highlight':
             saveHighlight(request).then(sendResponse);
             return true;
+        case 'save-url':
+            saveUrl(request).then(sendResponse);
+            return true;
     }
 });
 /* eslint-enable consistent-return */
 
 function saveHighlight(request) {
+
     const data = {
         'highlight': request.data,
         'username' : uname,
     };
-    callExtension(data).then((r) => "saved").catch();
+    callExtension(data, 'extensionCallback').then((r) => "saved").catch();
     return data;
 }
 
-async function callExtension(data) {
+/* eslint-enable consistent-return */
+function saveUrl(request) {
+    console.log("!!!!!!!!!!!")
+    console.log(request.url)
+    const data = {
+        'url': request.url,
+        'username': uname,
+    }
+    callExtension(data, 'extensionSaveUrl').then((r) => "saved").catch();
 
-    const response = await fetch(`${base}/extensionCallback/`, {
+    return data;
+}
+
+
+
+async function callExtension(data, path) {
+
+    const response = await fetch(`${base}/${path}/`, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors', // no-cors, *cors, same-origin
         cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
