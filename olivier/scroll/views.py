@@ -122,7 +122,7 @@ def get_e_list(request, username):
 
     if request.method == 'GET':
         ctx["data"] = get_e_data(uname=username)
-        ic(ctx)
+        # ic(ctx)
 
     return render(request, "Elist.html", ctx)
 
@@ -140,7 +140,7 @@ def get_e_data(uname):
         # ic(just_highlights)
 
         for i in just_highlights:
-            print("!!!!!",i.href)
+            # print("!!!!!",i.href)
             created_date = date.isoformat(i.created_at)
             url = i.href
             if created_date in allhighlights:
@@ -149,20 +149,20 @@ def get_e_data(uname):
                 allhighlights[created_date] = {
                     url : []
                 }
-        ic(allhighlights)
+        # ic(allhighlights)
 
         highlights = list(ExtensionHighlightMetaData.objects.filter(edata__user=euserobj))[::-1]
         for i in highlights:
-            print("!!!!!!!")
-            ic(i.text)
-            ic(i.edata.href)
-            ic(allhighlights)
+            # print("!!!!!!!")
+            # ic(i.text)
+            # ic(i.edata.href)
+            # ic(allhighlights)
             created_date = date.isoformat(i.created_at)
             url = i.edata.href
             if created_date in allhighlights:
                 if url in allhighlights[created_date]:
-                    ic("!!!1")
-                    ic(url)
+                    # ic("!!!1")
+                    # ic(url)
                     allhighlights[created_date][url].append(i.text)
                 else:
                     allhighlights[created_date][url] = [i.text]
@@ -171,7 +171,7 @@ def get_e_data(uname):
                 allhighlights[created_date] = {
                     url: [i.text]
                 }
-        ic(allhighlights)
+        # ic(allhighlights)
 
     return allhighlights
 
@@ -229,8 +229,8 @@ def save_e_url(req):
         )
         ctx["success"] = True
     except Exception as e:
-        ic("!!!!!!!!!")
-        ic(e)
+        # ic("!!!!!!!!!")
+        # ic(e)
         ctx = {
             "error": e,
         }

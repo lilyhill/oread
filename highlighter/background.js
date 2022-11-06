@@ -6,7 +6,7 @@ import {executeInCurrentTab} from './src/background/utils.js';
 
 const DEFAULT_COLOR_TITLE = "yellow";
 
-const base = "https://tunnel.oread.pw";
+const base = "https://oread.pw";
 
 var uname = "";
 
