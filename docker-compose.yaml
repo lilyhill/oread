@@ -8,7 +8,7 @@ services:
     expose:
       - 80
     environment:
-      - URI=https://tunnel.oread.pw
+      - URI=https://www.oread.pw
       - DEBUG=True
       - ALLOWED_HOSTS=*
     env_file:
