@@ -17,3 +17,5 @@ olivier/assets/*
 
 backup/*
 *.sqlite3
+
+*.log

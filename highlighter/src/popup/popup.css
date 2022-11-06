@@ -137,6 +137,25 @@ body {
     filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
 }
 
+#saveUrl-button{
+      display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    width: 190px;
+    height: 40px;
+    margin: 10px 0;
+    padding-top: 4px;
+
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: bold;
+    background-color: #fdd33c;
+    border: 0;
+    border-radius: 7px;
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
 #toggle-button > span {
     margin-bottom: -4px;
 }

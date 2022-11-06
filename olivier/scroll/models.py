@@ -16,7 +16,6 @@ class TelegramUser(models.Model):
 
 
 class TelegramMessage(models.Model):
-
     user = models.ForeignKey(TelegramUser, on_delete=models.CASCADE, null=True)
     mid = models.IntegerField(default=0, null=True)
 
@@ -28,7 +27,6 @@ class TelegramMessage(models.Model):
 
 
 class TelegramData(models.Model):
-
     primary_msg = models.ForeignKey(TelegramMessage, on_delete=models.CASCADE, null=True)
     text = models.TextField(max_length=10000, default="", null=True)
     sub_text = models.TextField(max_length=1000, default="", null=True)
@@ -56,7 +54,6 @@ class ExtensionData(models.Model):
 
 
 class ExtensionHighlightMetaData(models.Model):
-
     edata = models.ForeignKey(ExtensionData, on_delete=models.CASCADE, null=True)
     anchorNode = models.TextField(max_length=1000, null=True)
     anchorOffset = models.IntegerField(null=True)
@@ -69,14 +66,13 @@ class ExtensionHighlightMetaData(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        if self.edata:
-            return f'{self.edata.user}'
+        if self.created_at:
+            return f'{self.created_at}'
         else:
             return "none"
 
 
-class Cards (models.Model):
-
+class Cards(models.Model):
     username = models.CharField(max_length=100, null=True)
     visible = models.TextField(max_length=1000, null=True)
     hidden = models.TextField(max_length=1000, null=True)

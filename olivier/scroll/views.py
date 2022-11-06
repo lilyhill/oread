@@ -122,11 +122,13 @@ def get_e_list(request, username):
 
     if request.method == 'GET':
         ctx["data"] = get_e_data(uname=username)
+        ic(ctx)
 
     return render(request, "Elist.html", ctx)
 
 
 def get_e_data(uname):
+    ic(uname)
     euserobj, created = ExtensionUser.objects.get_or_create(
         uname=uname
     )
@@ -134,13 +136,33 @@ def get_e_data(uname):
     allhighlights = {}
 
     if not created:
+        just_highlights = list(ExtensionData.objects.filter(user=euserobj))[::-1]
+        # ic(just_highlights)
+
+        for i in just_highlights:
+            print("!!!!!",i.href)
+            created_date = date.isoformat(i.created_at)
+            url = i.href
+            if created_date in allhighlights:
+                allhighlights[created_date][url] = []
+            else:
+                allhighlights[created_date] = {
+                    url : []
+                }
+        ic(allhighlights)
+
         highlights = list(ExtensionHighlightMetaData.objects.filter(edata__user=euserobj))[::-1]
         for i in highlights:
-            print(i.text)
+            print("!!!!!!!")
+            ic(i.text)
+            ic(i.edata.href)
+            ic(allhighlights)
             created_date = date.isoformat(i.created_at)
             url = i.edata.href
             if created_date in allhighlights:
                 if url in allhighlights[created_date]:
+                    ic("!!!1")
+                    ic(url)
                     allhighlights[created_date][url].append(i.text)
                 else:
                     allhighlights[created_date][url] = [i.text]
@@ -149,6 +171,7 @@ def get_e_data(uname):
                 allhighlights[created_date] = {
                     url: [i.text]
                 }
+        ic(allhighlights)
 
     return allhighlights
 
@@ -156,6 +179,7 @@ def get_e_data(uname):
 @csrf_exempt
 def save_e_value(request):
     body = json.loads(request.body)
+    ic(body)
     highlightData = body['highlight']
     pass
     highlight = HighlightForm(highlightData)
@@ -185,6 +209,33 @@ def save_e_value(request):
     else:
         pass
     return JsonResponse({"success": True})
+
+
+@csrf_exempt
+def save_e_url(req):
+    ctx = {}
+    body = json.loads(req.body)
+    ic(body)
+    ic(body['url'])
+    try:
+
+        user = ExtensionUser.objects.get(
+            uname=body['username']
+        )
+
+        edata = ExtensionData.objects.get_or_create(
+            user=user,
+            href=body["url"],
+        )
+        ctx["success"] = True
+    except Exception as e:
+        ic("!!!!!!!!!")
+        ic(e)
+        ctx = {
+            "error": e,
+        }
+
+    return JsonResponse(ctx)
 
 
 @csrf_exempt
@@ -225,7 +276,8 @@ def view_all_cards(req, username):
             "hidden": card.hidden,
         })
 
-    return render(req, "cards.html",ctx)
+    return render(req, "cards.html", ctx)
+
 
 @csrf_exempt
 def add_cards(req, username):

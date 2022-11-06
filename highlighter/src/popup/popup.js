@@ -4,6 +4,7 @@ import {open as openChangeColorModal} from "./change-color-modal.js";
 
 
 const highlightButton = document.getElementById('toggle-button');
+const saveUrlButton = document.getElementById('saveUrl-button');
 const removeAllButton = document.getElementById('remove-all-button');
 const copyAllButton = document.getElementById('copy-all-button');
 const closeButton = document.getElementById('close-button');
@@ -20,7 +21,7 @@ const highlightsListLostTitleElement = document.getElementById('highlights-list-
 var res = document.getElementById('result');
 
 var base = "";
-chrome.storage.sync.get(['baseUrl'], function(result) {
+chrome.storage.sync.get(['baseUrl'], function (result) {
     base = result.baseUrl;
     console.log(base)
 });
@@ -41,6 +42,13 @@ function colorChanged(colorOption) {
 
     // Change the global highlighter color
     chrome.runtime.sendMessage({action: 'change-color', color: colorTitle, source: 'popup'});
+}
+
+function saveUrlEvent(){
+    chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
+        chrome.runtime.sendMessage({action: 'save-url', url:tabs[0].url});
+    });
+    console.log("!!!!!!!!!!!!!!!")
 }
 
 function toggleHighlighterCursor() {
@@ -208,7 +216,8 @@ function saveUsername(event) {
 
             var uname = curUname;
 
-            chrome.storage.sync.set({username: uname}, () => {});
+            chrome.storage.sync.set({username: uname}, () => {
+            });
 
             const url = jsonResponse.url;
             res.innerHTML = `<a href=${url}>${url}</a>`;
@@ -217,7 +226,7 @@ function saveUsername(event) {
     console.log("fetched data")
 }
 
-function ifUsernamePresentcb (result){
+function ifUsernamePresentcb(result) {
 
     var uname = result.username;
     let url = `${base}/e/${uname}`;
@@ -233,6 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Register Events
+saveUrlButton.addEventListener('click',saveUrlEvent);
 highlightButton.addEventListener('click', toggleHighlighterCursor);
 copyAllButton.addEventListener('click', copyHighlights);
 removeAllButton.addEventListener('click', openRemoveAllModal);

@@ -7,6 +7,10 @@ services:
       dockerfile: Dockerfile
     expose:
       - 80
+    environment:
+      - URI=https://tunnel.oread.pw
+      - DEBUG=True
+      - ALLOWED_HOSTS=*
     env_file:
       - .env
     volumes:

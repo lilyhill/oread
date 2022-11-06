@@ -12,6 +12,7 @@ urlpatterns = [
 
     # Extension URLs
     path('extensionCallback/',save_e_value),
+    path('extensionSaveUrl/',save_e_url),
     path('saveUsername/', save_username),
     path('e/<username>/', get_e_list),
 
