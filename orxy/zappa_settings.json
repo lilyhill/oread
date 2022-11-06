@@ -1,0 +1,15 @@
+{
+  "dev": {
+    "aws_region": "ap-south-1",
+    "django_settings": "orxy.settings",
+    "profile_name": "default",
+    "project_name": "orxy",
+    "runtime": "python3.8",
+    "s3_bucket": "zappa-iulhgcep1",
+    "apigateway_enabled": true,
+    "manage_roles": true,
+    "cors": true,
+    "domain": "www.erqel.com",
+    "certificate_arn": "arn:aws:acm:us-east-1:631327104409:certificate/923cc9df-d313-4a4b-a340-362d0c3568ba"
+  }
+}

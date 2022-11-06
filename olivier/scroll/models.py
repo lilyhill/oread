@@ -16,7 +16,6 @@ class TelegramUser(models.Model):
 
 
 class TelegramMessage(models.Model):
-
     user = models.ForeignKey(TelegramUser, on_delete=models.CASCADE, null=True)
     mid = models.IntegerField(default=0, null=True)
 
@@ -28,7 +27,6 @@ class TelegramMessage(models.Model):
 
 
 class TelegramData(models.Model):
-
     primary_msg = models.ForeignKey(TelegramMessage, on_delete=models.CASCADE, null=True)
     text = models.TextField(max_length=10000, default="", null=True)
     sub_text = models.TextField(max_length=1000, default="", null=True)
@@ -43,8 +41,20 @@ class ExtensionUser(models.Model):
         return self.uname
 
 
-class ExtensionHighlightMetaData(models.Model):
+class ExtensionData(models.Model):
+    user = models.ForeignKey(ExtensionUser, on_delete=models.CASCADE, null=True, )
+    href = models.URLField(null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        if self.user:
+            return self.user.uname
+        else:
+            return "none"
+
+
+class ExtensionHighlightMetaData(models.Model):
+    edata = models.ForeignKey(ExtensionData, on_delete=models.CASCADE, null=True)
     anchorNode = models.TextField(max_length=1000, null=True)
     anchorOffset = models.IntegerField(null=True)
     color = models.TextField(max_length=1000, null=True)
@@ -62,21 +72,7 @@ class ExtensionHighlightMetaData(models.Model):
             return "none"
 
 
-class ExtensionData(models.Model):
-    edata = models.ForeignKey(ExtensionHighlightMetaData, on_delete=models.CASCADE, null=True)
-    user = models.ForeignKey(ExtensionUser, on_delete=models.CASCADE, null=True, )
-    href = models.URLField(null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        if self.user:
-            return self.user.uname
-        else:
-            return "none"
-
-
-class Cards (models.Model):
-
+class Cards(models.Model):
     username = models.CharField(max_length=100, null=True)
     visible = models.TextField(max_length=1000, null=True)
     hidden = models.TextField(max_length=1000, null=True)

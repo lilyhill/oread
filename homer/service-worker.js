@@ -14,7 +14,7 @@ function onInstalledCallback(details) {
 
     //setting base url.
 
-    base_url = `https://9ccd-2406-7400-56-d735-9a4-40ec-50f4-b028.in.ngrok.io`
+    base_url = `https://tunnel.oread.pw`
     chrome.storage.sync.set({base_url: base_url}, function () {
         console.log('base_url is set to ' + base_url);
     });

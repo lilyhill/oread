@@ -6,18 +6,26 @@
 {% for date, content in data.items %}
     <p>##{{ date }}</p>
     <ul>
-    {% for url,textlist in content.items %}
-        <li>- [ {{ textlist.0 | safe }} ]({{ url }}) </li>
-        {% for text in textlist%}
-            {% if not textlist.0 == text %}
-            <ul>
-                <li> - {{ text | safe }}</li>
-            </ul>
+    {% if content.items %}
+        {% for url,textlist in content.items %}
+            {% if textlist %}
+                <li>- [ {{ textlist.0 | safe }} ]({{ url }}) </li>
+            {% else %}
+                <li>- [{{ url }}]({{ url }})</li>
             {% endif %}
+            {% for text in textlist%}
+                {% if not textlist.0 == text %}
+                <ul>
+                    <li> - {{ text | safe }}</li>
+                </ul>
+                {% endif %}
+            {% endfor %}
         {% endfor %}
-    {% endfor %}
+    {% endif %}
     </ul>
+
 {% endfor %}
 {% endif %}
 
 {% endblock %}
+
