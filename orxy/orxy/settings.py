@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'orxy.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django_s3_sqlite',
-        'NAME': 'db.sqlite3',
+        'NAME': 'db2.sqlite3',
         'BUCKET': 'zappa-iulhgcep1',
     }
 }

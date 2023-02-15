@@ -19,3 +19,7 @@ backup/*
 *.sqlite3
 
 *.log
+
+fly.toml
+
+wireguard-conf
