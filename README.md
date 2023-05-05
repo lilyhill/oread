@@ -26,3 +26,18 @@ When I started writing my readlog. I was unable to share the links that I read i
 ### Running in Dev mode
 
 Add secret key in env file, or docker-compose.yml file and then run, `docker-compose up`
+
+
+## fly scp to a machine
+
+proxy the machine using
+```shell
+fly proxy 10022:22
+```
+
+then in another terminal 
+connect using the pub file.
+```shell
+scp -i <path_to_ssh_file> -P 10022 root@localhost:/home/app/web/db.sqlite3 may2023.sqlite3
+```
+

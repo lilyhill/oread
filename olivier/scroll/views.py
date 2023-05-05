@@ -163,7 +163,7 @@ def get_e_data(uname):
                 if url in allhighlights[created_date]:
                     # ic("!!!1")
                     # ic(url)
-                    allhighlights[created_date][url].append(i.text)
+                    allhighlights[created_date][url].insert(0, i.text)
                 else:
                     allhighlights[created_date][url] = [i.text]
 
