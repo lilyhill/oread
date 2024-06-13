@@ -106,7 +106,7 @@ def collate_data(data):
 @csrf_exempt
 def save_username(request):
     body = json.loads(request.body)
-    ic(body)
+    # ic(body)
     uname = body["username"]
 
     d = {
@@ -128,7 +128,7 @@ def get_e_list(request, username):
 
 
 def get_e_data(uname):
-    ic(uname)
+    # ic(uname)
     euserobj, created = ExtensionUser.objects.get_or_create(
         uname=uname
     )
@@ -179,7 +179,7 @@ def get_e_data(uname):
 @csrf_exempt
 def save_e_value(request):
     body = json.loads(request.body)
-    ic(body)
+    # ic(body)
     highlightData = body['highlight']
     pass
     highlight = HighlightForm(highlightData)
@@ -215,8 +215,8 @@ def save_e_value(request):
 def save_e_url(req):
     ctx = {}
     body = json.loads(req.body)
-    ic(body)
-    ic(body['url'])
+    # ic(body)
+    # ic(body['url'])
     try:
 
         user = ExtensionUser.objects.get(
@@ -249,8 +249,8 @@ def get_card(req, username):
 
     card = random.choice(cards)
 
-    ic(card.visible)
-    ic(card.hidden)
+    # ic(card.visible)
+    # ic(card.hidden)
     ctx["card"] = {
         "visible": card.visible,
         "hidden": card.hidden,

@@ -5,7 +5,7 @@ from .db import *
 
 
 def handle_reply(message):
-    ic('^^^^^^^^^^^^ handle_reply')
+    # ic('^^^^^^^^^^^^ handle_reply')
     try:
 
         msg = get_telegram_msg(
@@ -21,7 +21,7 @@ def handle_reply(message):
 
         t.save()
 
-        ic(t.sub_text)
+        # ic(t.sub_text)
         ackURL(mid=message["message_id"], cid=message["chat"]["id"])
 
     except Exception as e:
@@ -31,7 +31,7 @@ def handle_reply(message):
 
 
 def handle_message(message):
-    ic("handle_message")
+    # ic("handle_message")
     try:
         user = TelegramUser.objects.get(
             cid=message["chat"]["id"],
@@ -39,7 +39,7 @@ def handle_message(message):
         )
 
     except TelegramUser.DoesNotExist as e:
-        ic(e)
+        # ic(e)
         user = create_telegram_user(message)
 
 
@@ -67,7 +67,7 @@ def handle_message(message):
 
 
 def create_telegram_user(message):
-    ic('create_telegram_user')
+    # ic('create_telegram_user')
     try:
         u = User(
             name="",
@@ -85,6 +85,7 @@ def create_telegram_user(message):
         sendWelcomeAndPin(cid=message["chat"]["id"])
 
     except Exception as e:
-        ic("create_telegram_user ", e)
+        # ic("create_telegram_user ", e)
+        pass
 
     return t

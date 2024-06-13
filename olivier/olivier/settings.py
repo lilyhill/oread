@@ -12,8 +12,9 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 import os
-from icecream import  ic
+# from icecream import  ic
 import mimetypes
+from django.core.management import utils
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 print(BASE_DIR)
@@ -21,11 +22,11 @@ print(BASE_DIR)
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 
 
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = utils.get_random_secret_key()
 
-DEBUG = os.environ.get("DEBUG", default='False') == 'True'
+DEBUG = os.environ.get("DEBUG", True)
 
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(" ")
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "*").split(" ")
 
 LOGGING = {
     'version': 1,
@@ -70,7 +71,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-base = os.environ.get("URI")
+base = os.environ.get("URI","http://localhost:8000")
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 CSRF_TRUSTED_ORIGINS = [base]
@@ -102,10 +103,11 @@ WSGI_APPLICATION = 'olivier.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR / 'data/db.sqlite3',
     }
 }
 
+print(DATABASES)
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -143,11 +145,12 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'assets/')
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static/"),
-]
-ic(STATICFILES_DIRS)
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+print("STATIC_ROOT",STATIC_ROOT)
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, "assets/"),
+# ]
+# ic(STATICFILES_DIRS)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

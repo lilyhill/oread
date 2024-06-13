@@ -1,5 +1,5 @@
 from ..models import *
-from icecream import ic
+# from icecream import ic
 import datetime
 
 
@@ -35,7 +35,7 @@ def getURL(mid, fid, cid):
 
 
 def saveMessage(body):
-    ic(body)
+    # ic(body)
     chat = body["message"]["chat"]
     message = body["message"]
     # try:
